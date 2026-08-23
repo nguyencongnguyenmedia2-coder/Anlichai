@@ -1,9 +1,6 @@
-# Robots.txt for An Lịch AI - https://www.anlichai.online
 User-agent: *
 Allow: /
 Disallow: /admin
-Disallow: /?admin=true
 
-# Sitemap index
 Sitemap: https://www.anlichai.online/sitemap.xml
 Sitemap: https://anlichai.online/sitemap.xml
