@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { X, Sparkles, Clock, ShieldCheck, Minimize2, ExternalLink, Bot } from 'lucide-react';
 import { DayDetail, EventItem, PersonalEvent } from '../types';
+import logoImg from '../assets/logo.png';
 
 interface DesktopWidgetProps {
   dayDetail: DayDetail;
@@ -62,14 +63,7 @@ export const DesktopWidget: React.FC<DesktopWidgetProps> = ({
       <div className="flex items-center justify-between pb-2 mb-2 border-b border-amber-200/80 dark:border-oriental-dark-border cursor-move">
         <div className="flex items-center space-x-1.5">
           <img 
-            src="./logo.png" 
-            onError={(e) => {
-              const target = e.currentTarget;
-              if (!target.dataset.tried) {
-                target.dataset.tried = 'true';
-                target.src = 'logo.png';
-              }
-            }}
+            src={logoImg} 
             alt="Logo" 
             className="w-6 h-6 rounded-full border border-oriental-gold-400 shadow-2xs object-cover" 
           />
