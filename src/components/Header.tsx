@@ -60,7 +60,14 @@ export const Header: React.FC<HeaderProps> = ({
               title="An Lịch AI - Xem ngày • Hiểu mình • Sống an"
             >
               <img 
-                src="/logo.png" 
+                src="./logo.png" 
+                onError={(e) => {
+                  const target = e.currentTarget;
+                  if (!target.dataset.tried) {
+                    target.dataset.tried = 'true';
+                    target.src = 'logo.png';
+                  }
+                }}
                 alt="An Lịch AI Logo" 
                 className="w-8 h-8 sm:w-11 sm:h-11 rounded-full object-cover shadow-md border-2 border-oriental-gold-400 group-hover:scale-105 transition-all shrink-0" 
               />

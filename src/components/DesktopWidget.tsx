@@ -61,7 +61,18 @@ export const DesktopWidget: React.FC<DesktopWidgetProps> = ({
       {/* Widget Header Bar (-webkit-app-region drag for Electron) */}
       <div className="flex items-center justify-between pb-2 mb-2 border-b border-amber-200/80 dark:border-oriental-dark-border cursor-move">
         <div className="flex items-center space-x-1.5">
-          <img src="/logo.png" alt="Logo" className="w-6 h-6 rounded-full border border-oriental-gold-400 shadow-2xs object-cover" />
+          <img 
+            src="./logo.png" 
+            onError={(e) => {
+              const target = e.currentTarget;
+              if (!target.dataset.tried) {
+                target.dataset.tried = 'true';
+                target.src = 'logo.png';
+              }
+            }}
+            alt="Logo" 
+            className="w-6 h-6 rounded-full border border-oriental-gold-400 shadow-2xs object-cover" 
+          />
           <span className="font-serif font-black text-xs text-oriental-red-900 dark:text-oriental-gold-400 tracking-wider">
             AN LỊCH AI WIDGET
           </span>

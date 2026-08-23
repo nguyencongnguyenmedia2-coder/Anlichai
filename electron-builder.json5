@@ -11,9 +11,15 @@
     "electron/**/*"
   ],
   "win": {
-    "target": "dir",
+    "target": ["nsis", "portable", "dir"],
     "cscLink": null,
     "verifyUpdateCodeSignature": false,
     "forceCodeSigning": false
+  },
+  "nsis": {
+    "oneClick": false,
+    "allowToChangeInstallationDirectory": true,
+    "createDesktopShortcut": true,
+    "createStartMenuShortcut": true
   }
 }
