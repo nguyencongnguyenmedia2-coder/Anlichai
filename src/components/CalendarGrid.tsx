@@ -1,5 +1,5 @@
 import React from 'react';
-import { ChevronLeft, ChevronRight, Calendar as CalendarIcon, Sparkles } from 'lucide-react';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { DayDetail, EventItem, PersonalEvent } from '../types';
 import { lunarService } from '../services/lunarService';
 

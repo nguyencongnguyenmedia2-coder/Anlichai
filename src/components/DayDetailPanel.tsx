@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Calendar, Compass, Share2, Clock, AlertTriangle, ShieldCheck, CheckCircle2, ChevronDown, ChevronUp, Bot, X, Sparkles } from 'lucide-react';
+import { Calendar, Compass, Share2, Clock, AlertTriangle, ShieldCheck, CheckCircle2, ChevronDown, ChevronUp, Bot, X } from 'lucide-react';
 import { DayDetail, EventItem, PersonalEvent } from '../types';
 import { lunarService } from '../services/lunarService';
 
