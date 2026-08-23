@@ -193,63 +193,68 @@ export const Header: React.FC<HeaderProps> = ({
           
           <button
             onClick={() => setActiveTab('calendar')}
-            className={`flex flex-col items-center justify-center py-1.5 px-3 rounded-xl transition-all active:scale-95 ${
+            aria-label="Xem Lịch Tháng"
+            className={`flex flex-col items-center justify-center py-1.5 px-3 rounded-xl transition-all active:scale-95 min-w-[48px] min-h-[48px] ${
               activeTab === 'calendar'
                 ? 'text-oriental-gold-300 bg-oriental-red-800 font-bold shadow-oriental scale-105 border border-oriental-gold-500/30'
-                : 'text-slate-600 dark:text-amber-200/70 hover:text-oriental-red-800'
+                : 'text-slate-800 dark:text-amber-100 hover:text-oriental-red-800'
             }`}
           >
             <Calendar className="w-4 h-4 mb-0.5" />
-            <span className="text-[10px] leading-none">Lịch Tháng</span>
+            <span className="text-[10px] leading-none font-semibold">Lịch Tháng</span>
           </button>
 
           <button
             onClick={() => setActiveTab('personal')}
-            className={`flex flex-col items-center justify-center py-1.5 px-3 rounded-xl transition-all active:scale-95 ${
+            aria-label="Xem Lịch Cá Nhân"
+            className={`flex flex-col items-center justify-center py-1.5 px-3 rounded-xl transition-all active:scale-95 min-w-[48px] min-h-[48px] ${
               activeTab === 'personal'
                 ? 'text-oriental-gold-300 bg-oriental-red-800 font-bold shadow-oriental scale-105 border border-oriental-gold-500/30'
-                : 'text-slate-600 dark:text-amber-200/70 hover:text-oriental-red-800'
+                : 'text-slate-800 dark:text-amber-100 hover:text-oriental-red-800'
             }`}
           >
             <CalendarCheck className="w-4 h-4 mb-0.5" />
-            <span className="text-[10px] leading-none">Cá Nhân</span>
+            <span className="text-[10px] leading-none font-semibold">Cá Nhân</span>
           </button>
 
           <button
             onClick={() => setActiveTab('events')}
-            className={`flex flex-col items-center justify-center py-1.5 px-3 rounded-xl transition-all active:scale-95 ${
+            aria-label="Xem Danh Sách Lễ Hội"
+            className={`flex flex-col items-center justify-center py-1.5 px-3 rounded-xl transition-all active:scale-95 min-w-[48px] min-h-[48px] ${
               activeTab === 'events'
                 ? 'text-oriental-gold-300 bg-oriental-red-800 font-bold shadow-oriental scale-105 border border-oriental-gold-500/30'
-                : 'text-slate-600 dark:text-amber-200/70 hover:text-oriental-red-800'
+                : 'text-slate-800 dark:text-amber-100 hover:text-oriental-red-800'
             }`}
           >
             <Compass className="w-4 h-4 mb-0.5" />
-            <span className="text-[10px] leading-none">Lễ Hội</span>
+            <span className="text-[10px] leading-none font-semibold">Lễ Hội</span>
           </button>
 
           <button
             onClick={() => setActiveTab('ai')}
-            className={`flex flex-col items-center justify-center py-1.5 px-3 rounded-xl transition-all relative active:scale-95 ${
+            aria-label="Trợ Lý AI Phong Thủy"
+            className={`flex flex-col items-center justify-center py-1.5 px-3 rounded-xl transition-all relative active:scale-95 min-w-[48px] min-h-[48px] ${
               activeTab === 'ai'
                 ? 'text-oriental-gold-300 bg-oriental-red-800 font-bold shadow-oriental scale-105 border border-oriental-gold-500/30'
-                : 'text-slate-600 dark:text-amber-200/70 hover:text-oriental-red-800'
+                : 'text-slate-800 dark:text-amber-100 hover:text-oriental-red-800'
             }`}
           >
             <Bot className="w-4 h-4 mb-0.5" />
-            <span className="text-[10px] leading-none">Trợ Lý AI</span>
+            <span className="text-[10px] leading-none font-semibold">Trợ Lý AI</span>
           </button>
 
           {isAdminMode && (
             <button
               onClick={() => setActiveTab('settings')}
-              className={`flex flex-col items-center justify-center py-1.5 px-3 rounded-xl transition-all active:scale-95 ${
+              aria-label="Cài Đặt Ứng Dụng"
+              className={`flex flex-col items-center justify-center py-1.5 px-3 rounded-xl transition-all active:scale-95 min-w-[48px] min-h-[48px] ${
                 activeTab === 'settings'
                   ? 'text-oriental-gold-300 bg-oriental-red-800 font-bold shadow-oriental scale-105 border border-oriental-gold-500/30'
-                  : 'text-slate-600 dark:text-amber-200/70 hover:text-oriental-red-800'
+                  : 'text-slate-800 dark:text-amber-100 hover:text-oriental-red-800'
               }`}
             >
               <Settings className="w-4 h-4 mb-0.5" />
-              <span className="text-[10px] leading-none">Cài Đặt</span>
+              <span className="text-[10px] leading-none font-semibold">Cài Đặt</span>
             </button>
           )}
 

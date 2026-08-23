@@ -334,8 +334,11 @@ export const App: React.FC = () => {
       )}
 
       {/* Footer Branding Bar */}
-      <footer className="mt-8 text-center text-[11px] sm:text-xs text-amber-900/60 dark:text-amber-200/50 py-4 border-t border-amber-200/50 dark:border-oriental-dark-border">
-        <p>An Lịch AI © 2026 • Xem ngày • Hiểu mình • Sống an • Mobile & Windows Desktop App (.exe)</p>
+      <footer className="mt-8 text-center text-[11px] sm:text-xs text-amber-900/70 dark:text-amber-200/60 py-4 border-t border-amber-200/50 dark:border-oriental-dark-border space-y-1">
+        <p className="font-medium">An Lịch AI © 2026 • Xem ngày • Hiểu mình • Sống an</p>
+        <p className="text-[10px] sm:text-[11px] text-oriental-red-900/80 dark:text-oriental-gold-400/90 font-semibold">
+          Thiết kế & Phát triển: <span className="font-bold">Nguyễn Công Nguyên</span> • SĐT/Zalo: <a href="tel:0934811307" className="underline hover:text-oriental-gold-500">0934811307</a>
+        </p>
       </footer>
 
     </div>

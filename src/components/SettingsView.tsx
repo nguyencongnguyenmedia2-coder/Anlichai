@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Settings, Key, Bell, Palette, Save, CheckCircle, Upload, ShieldCheck, Lock, Unlock, Globe } from 'lucide-react';
+import { Settings, Key, Bell, Palette, Save, CheckCircle, Upload, ShieldCheck, Lock, Unlock, Globe, User } from 'lucide-react';
 import { AppSettings } from '../types';
 
 interface SettingsViewProps {
@@ -314,6 +314,25 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
             </div>
           </div>
         )}
+
+        {/* Section: Designer & Developer Credits */}
+        <div className="bg-amber-50/70 dark:bg-oriental-dark-bg/80 p-4 rounded-xl border border-oriental-gold-500/40 space-y-2">
+          <h3 className="font-serif font-bold text-sm text-oriental-red-900 dark:text-oriental-gold-400 flex items-center gap-2">
+            <User className="w-4 h-4 text-amber-600" />
+            Thông Tin Tác Giả & Nhà Thiết Kế
+          </h3>
+          <div className="text-xs text-slate-700 dark:text-amber-200/90 leading-relaxed space-y-1">
+            <p>
+              • <strong>Nhà thiết kế & Phát triển:</strong> Nguyễn Công Nguyên
+            </p>
+            <p>
+              • <strong>Số điện thoại / Zalo:</strong> <a href="tel:0934811307" className="font-bold text-oriental-red-800 dark:text-oriental-gold-400 underline">0934811307</a>
+            </p>
+            <p className="text-[11px] text-amber-900/70 dark:text-amber-300/60 pt-1">
+              Bản quyền thuộc về Nguyễn Công Nguyên © 2026. Ứng dụng An Lịch AI - Xem ngày • Hiểu mình • Sống an.
+            </p>
+          </div>
+        </div>
 
         {/* Save Button */}
         <div className="flex justify-end pt-2">

@@ -12,5 +12,17 @@ export default defineConfig({
   build: {
     outDir: 'dist',
     emptyOutDir: true,
+    target: 'esnext',
+    cssCodeSplit: true,
+    minify: 'esbuild',
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          'react-vendor': ['react', 'react-dom'],
+          'lunar-vendor': ['lunar-javascript'],
+          'icons-vendor': ['lucide-react'],
+        },
+      },
+    },
   },
 });

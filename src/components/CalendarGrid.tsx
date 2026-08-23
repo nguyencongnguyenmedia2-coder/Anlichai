@@ -49,14 +49,16 @@ export const CalendarGrid: React.FC<CalendarGridProps> = ({
           <div className="flex items-center space-x-1 bg-amber-100/70 dark:bg-oriental-dark-bg p-1 rounded-2xl border border-oriental-gold-500/40 shadow-2xs">
             <button
               onClick={() => onChangeMonth(-1)}
-              className="p-1.5 sm:p-2 rounded-xl hover:bg-oriental-red-800 hover:text-oriental-gold-300 text-amber-950 dark:text-amber-200 transition-all font-bold cursor-pointer active:scale-95"
+              aria-label="Chuyển sang tháng trước"
+              className="p-1.5 sm:p-2 rounded-xl hover:bg-oriental-red-800 hover:text-oriental-gold-300 text-amber-950 dark:text-amber-200 transition-all font-bold cursor-pointer active:scale-95 min-w-[40px] min-h-[40px] flex items-center justify-center"
               title="Tháng trước"
             >
               <ChevronLeft className="w-4 h-4 sm:w-5 sm:h-5" />
             </button>
             <button
               onClick={() => onChangeMonth(1)}
-              className="p-1.5 sm:p-2 rounded-xl hover:bg-oriental-red-800 hover:text-oriental-gold-300 text-amber-950 dark:text-amber-200 transition-all font-bold cursor-pointer active:scale-95"
+              aria-label="Chuyển sang tháng sau"
+              className="p-1.5 sm:p-2 rounded-xl hover:bg-oriental-red-800 hover:text-oriental-gold-300 text-amber-950 dark:text-amber-200 transition-all font-bold cursor-pointer active:scale-95 min-w-[40px] min-h-[40px] flex items-center justify-center"
               title="Tháng sau"
             >
               <ChevronRight className="w-4 h-4 sm:w-5 sm:h-5" />
@@ -82,6 +84,7 @@ export const CalendarGrid: React.FC<CalendarGridProps> = ({
         <div className="flex items-center space-x-2 bg-amber-50 dark:bg-oriental-dark-bg p-1.5 rounded-2xl border border-amber-300/70 dark:border-oriental-dark-border shadow-2xs w-full sm:w-auto justify-center">
           <select
             value={currentMonth}
+            aria-label="Chọn tháng trong năm"
             onChange={(e) => onSetMonthYear(Number(e.target.value), currentYear)}
             className="flex-1 sm:flex-initial px-3 py-1.5 bg-white dark:bg-oriental-dark-card border border-amber-300 dark:border-amber-800 rounded-xl font-serif font-bold text-xs sm:text-sm text-oriental-red-900 dark:text-oriental-gold-300 focus:outline-none focus:ring-2 focus:ring-oriental-gold-500 cursor-pointer shadow-2xs"
           >
@@ -94,6 +97,7 @@ export const CalendarGrid: React.FC<CalendarGridProps> = ({
 
           <select
             value={currentYear}
+            aria-label="Chọn năm"
             onChange={(e) => onSetMonthYear(currentMonth, Number(e.target.value))}
             className="flex-1 sm:flex-initial px-3 py-1.5 bg-white dark:bg-oriental-dark-card border border-amber-300 dark:border-amber-800 rounded-xl font-mono font-extrabold text-xs sm:text-sm text-oriental-red-900 dark:text-oriental-gold-300 focus:outline-none focus:ring-2 focus:ring-oriental-gold-500 cursor-pointer shadow-2xs"
           >
@@ -161,7 +165,16 @@ export const CalendarGrid: React.FC<CalendarGridProps> = ({
           return (
             <div
               key={index}
+              role="button"
+              tabIndex={0}
+              aria-label={`Ngày ${dayDetail.solarDay} tháng ${dayDetail.solarMonth} năm ${dayDetail.solarYear}, Âm lịch ${dayDetail.lunarDay}/${dayDetail.lunarMonth}`}
               onClick={() => onSelectDate(dayDetail.solarDate)}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                  e.preventDefault();
+                  onSelectDate(dayDetail.solarDate);
+                }
+              }}
               className={`relative min-h-[58px] sm:min-h-[96px] p-1.5 sm:p-2.5 rounded-xl sm:rounded-2xl cursor-pointer transition-all duration-200 flex flex-col justify-between select-none group border overflow-hidden ${
                 isSelected
                   ? 'bg-gradient-to-br from-oriental-red-800 via-oriental-red-900 to-oriental-red-950 text-white border-2 border-oriental-gold-400 shadow-oriental-lg scale-[1.03] z-20 ring-2 sm:ring-4 ring-oriental-gold-400/40'
