@@ -1,5 +1,6 @@
 import { ChatMessage, DayDetail } from '../types';
 import { storageService, BUILTIN_MASTER_KEY } from './storageService';
+import { lunarService } from './lunarService';
 
 const SYSTEM_PROMPT = `Bạn là Trợ lý Phong Thủy & Âm Dương Lịch Chuyên Nghiệp của ứng dụng "An Lịch AI" (Slogan: Xem ngày • Hiểu mình • Sống an).
 Nhiệm vụ của bạn là giải đáp chuyên sâu các câu hỏi về:
@@ -33,11 +34,10 @@ export const aiService = {
       modelName = 'google/gemini-2.5-flash';
     }
 
-    let fullUserText = userMessage;
-    if (dayContext) {
-      const contextInfo = `[NGỮ CẢNH NGÀY ĐANG XEM: Dương Lịch ${dayContext.solarDay}/${dayContext.solarMonth}/${dayContext.solarYear}, Âm Lịch ${dayContext.lunarDay}/${dayContext.lunarMonthName}, Can Chi Ngày ${dayContext.canChiDay}, Can Chi Tháng ${dayContext.canChiMonth}, Nạp Âm ${dayContext.napAm}, Đánh giá: ${dayDetailRatingString(dayContext)}]`;
-      fullUserText = `${contextInfo}\nCâu hỏi người dùng: ${userMessage}`;
-    }
+    // Always inject day context (either selected date or current today date automatically)
+    const activeContext = dayContext || lunarService.getDayDetail(new Date());
+    const contextInfo = `[NGỮ CẢNH NGÀY ĐANG XEM: Dương Lịch ${activeContext.solarDay}/${activeContext.solarMonth}/${activeContext.solarYear}, Âm Lịch ${activeContext.lunarDay}/${activeContext.lunarMonthName}, Can Chi Ngày ${activeContext.canChiDay}, Can Chi Tháng ${activeContext.canChiMonth}, Nạp Âm ${activeContext.napAm}, Đánh giá: ${dayDetailRatingString(activeContext)}]`;
+    const fullUserText = `${contextInfo}\nCâu hỏi người dùng: ${userMessage}`;
 
     const recentHistory = history.slice(-6);
     const openRouterEndpoint = 'https://openrouter.ai/api/v1/chat/completions';
