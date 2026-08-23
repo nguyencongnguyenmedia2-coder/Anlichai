@@ -162,7 +162,7 @@ export const CalendarGrid: React.FC<CalendarGridProps> = ({
             <div
               key={index}
               onClick={() => onSelectDate(dayDetail.solarDate)}
-              className={`relative min-h-[58px] sm:min-h-[96px] p-1.5 sm:p-2.5 rounded-xl sm:rounded-2xl cursor-pointer transition-all duration-200 flex flex-col justify-between select-none group border ${
+              className={`relative min-h-[58px] sm:min-h-[96px] p-1.5 sm:p-2.5 rounded-xl sm:rounded-2xl cursor-pointer transition-all duration-200 flex flex-col justify-between select-none group border overflow-hidden ${
                 isSelected
                   ? 'bg-gradient-to-br from-oriental-red-800 via-oriental-red-900 to-oriental-red-950 text-white border-2 border-oriental-gold-400 shadow-oriental-lg scale-[1.03] z-20 ring-2 sm:ring-4 ring-oriental-gold-400/40'
                   : isToday
@@ -194,11 +194,16 @@ export const CalendarGrid: React.FC<CalendarGridProps> = ({
                     {dayDetail.solarDay}
                   </span>
 
-                  {/* Today Badge Pill */}
+                  {/* Today Badge Pill (Desktop text badge, Mobile clean star dot) */}
                   {isToday && (
-                    <span className="text-[9px] font-extrabold px-1 rounded bg-oriental-red-800 text-oriental-gold-300 border border-oriental-gold-400/50">
-                      HÔM NAY
-                    </span>
+                    <>
+                      <span className="hidden sm:inline-block text-[9px] font-extrabold px-1 rounded bg-oriental-red-800 text-oriental-gold-300 border border-oriental-gold-400/50">
+                        HÔM NAY
+                      </span>
+                      <span className="sm:hidden text-[10px] font-black text-oriental-red-700 dark:text-oriental-gold-400 shrink-0">
+                        ✦
+                      </span>
+                    </>
                   )}
                 </div>
 
