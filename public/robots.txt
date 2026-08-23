@@ -1,8 +1,8 @@
-# Robots.txt for An Lịch AI - https://anlich.ai
+# Robots.txt for An Lịch AI - https://anlichai.vercel.app
 User-agent: *
 Allow: /
 Disallow: /admin
 Disallow: /?admin=true
 
 # Sitemap index
-Sitemap: https://anlich.ai/sitemap.xml
+Sitemap: https://anlichai.vercel.app/sitemap.xml
