@@ -168,7 +168,7 @@ export const AIChatView: React.FC<AIChatViewProps> = ({
         {messages.length === 0 && (
           <div className="bg-gradient-to-br from-amber-50/90 via-white to-amber-50/80 dark:from-oriental-dark-bg/90 dark:to-oriental-dark-card p-5 sm:p-8 rounded-3xl border-2 border-amber-200/80 dark:border-oriental-dark-border text-center my-auto shadow-md">
             <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-gradient-to-br from-oriental-red-800 to-oriental-red-950 text-oriental-gold-300 flex items-center justify-center text-2xl sm:text-3xl mx-auto mb-3 shadow-oriental border-2 border-oriental-gold-400">
-              ☯
+              <Sparkles className="w-6 h-6 sm:w-7 sm:h-7 text-oriental-gold-300" />
             </div>
             <h3 className="font-serif font-black text-base sm:text-xl text-oriental-red-900 dark:text-oriental-gold-400 mb-1.5 tracking-wide">
               Kính Chào Quý Gia Chủ!
@@ -191,7 +191,7 @@ export const AIChatView: React.FC<AIChatViewProps> = ({
                 className="p-3 rounded-2xl bg-gradient-to-r from-amber-100/90 to-amber-200/80 dark:from-oriental-dark-card dark:to-amber-950/40 hover:brightness-105 border-2 border-oriental-gold-500/40 text-amber-950 dark:text-amber-200 font-extrabold text-xs transition-all flex items-center space-x-2.5 shadow-2xs active:scale-98"
               >
                 <Sparkles className="w-4.5 h-4.5 text-oriental-gold-500 shrink-0" />
-                <span>☯️ Ngày Hôm Nay Cát/Hung?</span>
+                <span>✨ Ngày Hôm Nay Cát/Hung?</span>
               </button>
             </div>
           </div>
@@ -207,7 +207,7 @@ export const AIChatView: React.FC<AIChatViewProps> = ({
           >
             {msg.role === 'assistant' && (
               <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-2xl bg-gradient-to-br from-oriental-red-800 to-oriental-red-950 text-oriental-gold-300 flex items-center justify-center font-extrabold text-sm sm:text-base shadow-md shrink-0 mt-0.5 border-2 border-oriental-gold-400">
-                ☯
+                <Bot className="w-5 h-5 text-oriental-gold-300" />
               </div>
             )}
 
@@ -231,7 +231,7 @@ export const AIChatView: React.FC<AIChatViewProps> = ({
         {isLoading && currentStreamText && (
           <div className="flex items-start space-x-2.5 justify-start">
             <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-2xl bg-gradient-to-br from-oriental-red-800 to-oriental-red-950 text-oriental-gold-300 flex items-center justify-center font-extrabold text-sm sm:text-base shadow-md shrink-0 mt-0.5 border-2 border-oriental-gold-400">
-              ☯
+              <Bot className="w-5 h-5 text-oriental-gold-300" />
             </div>
             <div className="max-w-[90%] sm:max-w-[82%] rounded-2xl rounded-tl-xs p-4 sm:p-5 bg-white/95 dark:bg-oriental-dark-card/95 border-2 border-amber-200/90 dark:border-oriental-dark-border text-slate-800 dark:text-amber-100 shadow-md leading-relaxed">
               {renderFormattedContent(cleanAsterisks(currentStreamText))}

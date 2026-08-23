@@ -22,6 +22,10 @@ export const DayDetailPanel: React.FC<DayDetailPanelProps> = ({
 
   const xuatHanhHours = lunarService.getLyThuanPhongXuatHanhHours(dayDetail.solarDate);
 
+  // Weekday Name Full (Thứ Hai, Thứ Ba, ..., Chủ Nhật)
+  const weekdaysFull = ['Chủ Nhật', 'Thứ Hai', 'Thứ Ba', 'Thứ Tư', 'Thứ Năm', 'Thứ Sáu', 'Thứ Bảy'];
+  const weekdayName = weekdaysFull[dayDetail.solarDate.getDay()];
+
   // Festivals on this date
   const dayFestivals = events.filter((ev) =>
     ev.isLunar
@@ -37,10 +41,10 @@ export const DayDetailPanel: React.FC<DayDetailPanelProps> = ({
   );
 
   const handleShare = () => {
-    const text = `📜 AN LỊCH AI (Xem ngày • Hiểu mình • Sống an)
-🗓 Dương Lịch: ${dayDetail.solarDay}/${dayDetail.solarMonth}/${dayDetail.solarYear}
+    const text = `📜 AN LỊCH AI (${weekdayName}, Ngày ${dayDetail.solarDay}/${dayDetail.solarMonth}/${dayDetail.solarYear})
+🗓 Dương Lịch: ${weekdayName}, ${dayDetail.solarDay}/${dayDetail.solarMonth}/${dayDetail.solarYear}
 🌙 Âm Lịch: Mùng ${dayDetail.lunarDay} Tháng ${dayDetail.lunarMonthName} (Can Chi: ${dayDetail.canChiDay})
-☯️ Đánh Giá: ${dayDetail.dayRating}
+Đánh Giá: ${dayDetail.dayRating}
 ✨ Nạp Âm: ${dayDetail.napAm} • Trực ${dayDetail.truc}
 ⏰ 6 Giờ Hoàng Đạo: ${dayDetail.hoangDaoHours.map(h => h.name.replace('Giờ ', '')).join(', ')}
 👉 Hướng Xuất Hành: ${dayDetail.xuatHanhDirections.taiThan}, ${dayDetail.xuatHanhDirections.hyThan}
@@ -48,7 +52,7 @@ Trải nghiệm ứng dụng tại An Lịch AI!`;
 
     if (navigator.share) {
       navigator.share({
-        title: `Lịch Âm Dương Ngày ${dayDetail.solarDay}/${dayDetail.solarMonth}`,
+        title: `Lịch Âm Dương ${weekdayName} Ngày ${dayDetail.solarDay}/${dayDetail.solarMonth}`,
         text: text,
       }).catch(() => {});
     } else {
@@ -104,13 +108,17 @@ Trải nghiệm ứng dụng tại An Lịch AI!`;
         </div>
       </div>
 
-      {/* Royal Hero Dual Date Banner */}
+      {/* Royal Hero Dual Date Banner (No Purple Emoji Background) */}
       <div className="bg-gradient-to-br from-oriental-red-800 via-oriental-red-900 to-oriental-red-950 text-oriental-gold-300 p-4 sm:p-5 rounded-2xl border-2 border-oriental-gold-400/60 shadow-oriental relative overflow-hidden">
         
-        <div className="absolute right-[-10px] bottom-[-10px] text-oriental-gold-500/10 font-serif font-black text-8xl select-none pointer-events-none">
-          ☯
+        {/* Top Weekday Pill Badge Header */}
+        <div className="text-center mb-3 pb-2 border-b border-oriental-gold-500/30">
+          <span className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-oriental-gold-400/20 text-oriental-gold-300 text-xs sm:text-sm font-serif font-black tracking-widest border border-oriental-gold-400/50 uppercase shadow-2xs">
+            ✦ {weekdayName} ✦
+          </span>
         </div>
 
+        {/* Dual Date Side-by-Side Grid */}
         <div className="grid grid-cols-2 gap-3 text-center divide-x-2 divide-oriental-gold-500/30 relative z-10">
           
           {/* Solar Date Side */}
@@ -140,6 +148,17 @@ Trải nghiệm ứng dụng tại An Lịch AI!`;
           </div>
 
         </div>
+
+        {/* Full Text Date Sub-Banner */}
+        <div className="mt-3 pt-2.5 border-t border-oriental-gold-500/30 text-center">
+          <p className="text-[11px] sm:text-xs font-bold text-amber-100/90 tracking-wide">
+            {weekdayName}, ngày {dayDetail.solarDay} tháng {dayDetail.solarMonth} năm {dayDetail.solarYear}
+          </p>
+          <p className="text-[10px] sm:text-[11px] text-oriental-gold-300/80 font-medium">
+            (Âm lịch Mùng {dayDetail.lunarDay} tháng {dayDetail.lunarMonthName} • {dayDetail.canChiDay})
+          </p>
+        </div>
+
       </div>
 
       {/* 4 Metric Cards Grid */}
@@ -292,7 +311,7 @@ Trải nghiệm ứng dụng tại An Lịch AI!`;
           className="w-full py-3 px-4 bg-gradient-to-br from-oriental-red-800 to-oriental-red-950 hover:from-oriental-red-700 hover:to-oriental-red-900 text-oriental-gold-300 rounded-2xl font-bold text-xs sm:text-sm flex items-center justify-center space-x-2 shadow-oriental transition-all border border-oriental-gold-500/40 cursor-pointer active:scale-98"
         >
           <Bot className="w-4.5 h-4.5 text-oriental-gold-300 animate-bounce" />
-          <span>🔮 Hỏi Trợ Lý AI Luận Ngày {dayDetail.solarDay}/{dayDetail.solarMonth}</span>
+          <span>🔮 Hỏi Trợ Lý AI Luận {weekdayName} ({dayDetail.solarDay}/{dayDetail.solarMonth})</span>
         </button>
       )}
 

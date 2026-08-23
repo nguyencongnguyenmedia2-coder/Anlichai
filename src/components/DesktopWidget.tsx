@@ -50,7 +50,7 @@ export const DesktopWidget: React.FC<DesktopWidgetProps> = ({
         className="hidden md:flex fixed bottom-4 right-4 z-50 bg-oriental-red-900 text-oriental-gold-300 p-2.5 rounded-full shadow-2xl border-2 border-oriental-gold-400 cursor-pointer items-center gap-2 hover:scale-105 transition-all select-none"
         title="Bấm để mở rộng Widget An Lịch AI"
       >
-        <span className="text-lg">☯</span>
+        <Sparkles className="w-4 h-4 text-oriental-gold-300" />
         <span className="font-serif font-black text-xs pr-1">AN LỊCH AI</span>
       </div>
     );
