@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Send, Trash2, Sparkles, RefreshCw, X, Zap, Compass, Star, Bot, Pin } from 'lucide-react';
+import { Send, Trash2, Sparkles, RefreshCw, X, Zap, Compass, Star, Pin } from 'lucide-react';
 import { AppSettings, ChatMessage, DayDetail } from '../types';
 import { aiService } from '../services/aiService';
 import { storageService } from '../services/storageService';
