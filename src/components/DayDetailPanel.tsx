@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Calendar, Compass, Share2, Clock, AlertTriangle, ShieldCheck, CheckCircle2, ChevronDown, ChevronUp, Bot, X } from 'lucide-react';
+import { Calendar, Compass, Share2, Clock, AlertTriangle, ShieldCheck, CheckCircle2, ChevronDown, ChevronUp, Bot, X, Sparkles } from 'lucide-react';
 import { DayDetail, EventItem, PersonalEvent } from '../types';
 import { lunarService } from '../services/lunarService';
 
@@ -58,13 +58,13 @@ Trải nghiệm ứng dụng tại An Lịch AI!`;
   };
 
   return (
-    <div className="bg-white/90 dark:bg-oriental-dark-card/95 rounded-3xl shadow-xl sm:shadow-2xl border border-amber-200/90 dark:border-oriental-dark-border p-4 sm:p-5 backdrop-blur-md transition-all space-y-4 relative">
+    <div className="bg-white/95 dark:bg-oriental-dark-card/95 rounded-2xl sm:rounded-3xl shadow-xl sm:shadow-2xl border-2 border-amber-200/90 dark:border-oriental-dark-border p-4 sm:p-5 backdrop-blur-md transition-all space-y-4 relative">
       
       {/* Mobile Close Button */}
       {onCloseMobilePanel && (
         <button
           onClick={onCloseMobilePanel}
-          className="md:hidden absolute top-4 right-4 p-1.5 rounded-full bg-amber-100/80 dark:bg-oriental-dark-bg text-slate-500 hover:text-slate-700"
+          className="md:hidden absolute top-4 right-4 p-2 rounded-full bg-amber-100/90 dark:bg-oriental-dark-bg text-amber-950 dark:text-amber-200 hover:bg-amber-200 cursor-pointer shadow-2xs"
           title="Đóng bảng chi tiết"
         >
           <X className="w-5 h-5" />
@@ -72,7 +72,7 @@ Trải nghiệm ứng dụng tại An Lịch AI!`;
       )}
 
       {/* Top Header & Day Rating Badge */}
-      <div className="flex items-center justify-between border-b border-amber-200/60 dark:border-oriental-dark-border pb-3 pr-8 md:pr-0">
+      <div className="flex items-center justify-between border-b border-amber-200/80 dark:border-oriental-dark-border pb-3 pr-8 md:pr-0">
         <div className="flex items-center space-x-2">
           <Calendar className="w-5 h-5 text-oriental-red-800 dark:text-oriental-gold-400" />
           <h3 className="text-lg font-serif font-black text-oriental-red-900 dark:text-oriental-gold-400">
@@ -96,7 +96,7 @@ Trải nghiệm ứng dụng tại An Lịch AI!`;
 
           <button
             onClick={handleShare}
-            className="p-1.5 rounded-full hover:bg-amber-100 dark:hover:bg-amber-900/40 text-slate-600 dark:text-amber-300 transition-colors"
+            className="p-2 rounded-full hover:bg-amber-100 dark:hover:bg-amber-900/50 text-slate-600 dark:text-amber-300 transition-colors cursor-pointer"
             title="Chia sẻ thông tin ngày"
           >
             <Share2 className="w-4 h-4" />
@@ -105,36 +105,36 @@ Trải nghiệm ứng dụng tại An Lịch AI!`;
       </div>
 
       {/* Royal Hero Dual Date Banner */}
-      <div className="bg-gradient-to-br from-oriental-red-900 via-oriental-red-950 to-oriental-red-900 text-oriental-gold-300 p-4 rounded-2xl border border-oriental-gold-400/50 shadow-oriental relative overflow-hidden">
+      <div className="bg-gradient-to-br from-oriental-red-800 via-oriental-red-900 to-oriental-red-950 text-oriental-gold-300 p-4 sm:p-5 rounded-2xl border-2 border-oriental-gold-400/60 shadow-oriental relative overflow-hidden">
         
         <div className="absolute right-[-10px] bottom-[-10px] text-oriental-gold-500/10 font-serif font-black text-8xl select-none pointer-events-none">
           ☯
         </div>
 
-        <div className="grid grid-cols-2 gap-3 text-center divide-x divide-oriental-gold-500/30 relative z-10">
+        <div className="grid grid-cols-2 gap-3 text-center divide-x-2 divide-oriental-gold-500/30 relative z-10">
           
           {/* Solar Date Side */}
           <div className="pr-2">
-            <span className="text-[10px] uppercase font-bold tracking-widest text-oriental-gold-400/80 block mb-0.5">
+            <span className="text-[10px] uppercase font-extrabold tracking-widest text-oriental-gold-400/90 block mb-0.5">
               DƯƠNG LỊCH
             </span>
-            <span className="text-4xl sm:text-5xl font-serif font-black text-white block leading-none my-1">
+            <span className="text-4xl sm:text-5xl font-serif font-black text-amber-50 block leading-none my-1">
               {dayDetail.solarDay}
             </span>
-            <span className="text-xs font-semibold text-oriental-gold-200">
+            <span className="text-xs font-bold text-oriental-gold-200">
               Tháng {dayDetail.solarMonth} / {dayDetail.solarYear}
             </span>
           </div>
 
           {/* Lunar Date Side */}
           <div className="pl-2">
-            <span className="text-[10px] uppercase font-bold tracking-widest text-oriental-gold-400/80 block mb-0.5">
+            <span className="text-[10px] uppercase font-extrabold tracking-widest text-oriental-gold-400/90 block mb-0.5">
               ÂM LỊCH
             </span>
             <span className="text-4xl sm:text-5xl font-serif font-black text-oriental-gold-300 block leading-none my-1">
               {dayDetail.lunarDay}
             </span>
-            <span className="text-xs font-semibold text-oriental-gold-200 truncate block">
+            <span className="text-xs font-bold text-oriental-gold-200 truncate block">
               Tháng {dayDetail.lunarMonthName}
             </span>
           </div>
@@ -143,32 +143,32 @@ Trải nghiệm ứng dụng tại An Lịch AI!`;
       </div>
 
       {/* 4 Metric Cards Grid */}
-      <div className="grid grid-cols-2 gap-2 text-xs">
+      <div className="grid grid-cols-2 gap-2.5 text-xs">
         
-        <div className="bg-amber-50/60 dark:bg-oriental-dark-bg/70 p-2.5 rounded-xl border border-amber-200/70 dark:border-oriental-dark-border">
-          <span className="text-[10px] text-slate-500 dark:text-slate-400 block mb-0.5">Can Chi Ngày</span>
-          <span className="font-serif font-bold text-oriental-red-900 dark:text-oriental-gold-300 text-sm">
+        <div className="bg-gradient-to-br from-amber-50 to-amber-100/80 dark:from-oriental-dark-bg dark:to-oriental-dark-card p-3 rounded-2xl border border-amber-300/70 dark:border-oriental-dark-border shadow-2xs">
+          <span className="text-[10px] text-slate-500 dark:text-slate-400 block mb-0.5 font-medium">Can Chi Ngày</span>
+          <span className="font-serif font-black text-oriental-red-900 dark:text-oriental-gold-300 text-sm">
             {dayDetail.canChiDay}
           </span>
         </div>
 
-        <div className="bg-amber-50/60 dark:bg-oriental-dark-bg/70 p-2.5 rounded-xl border border-amber-200/70 dark:border-oriental-dark-border">
-          <span className="text-[10px] text-slate-500 dark:text-slate-400 block mb-0.5">Can Chi Tháng</span>
-          <span className="font-serif font-bold text-oriental-red-900 dark:text-oriental-gold-300 text-sm">
+        <div className="bg-gradient-to-br from-amber-50 to-amber-100/80 dark:from-oriental-dark-bg dark:to-oriental-dark-card p-3 rounded-2xl border border-amber-300/70 dark:border-oriental-dark-border shadow-2xs">
+          <span className="text-[10px] text-slate-500 dark:text-slate-400 block mb-0.5 font-medium">Can Chi Tháng</span>
+          <span className="font-serif font-black text-oriental-red-900 dark:text-oriental-gold-300 text-sm">
             {dayDetail.canChiMonth}
           </span>
         </div>
 
-        <div className="bg-amber-50/60 dark:bg-oriental-dark-bg/70 p-2.5 rounded-xl border border-amber-200/70 dark:border-oriental-dark-border">
-          <span className="text-[10px] text-slate-500 dark:text-slate-400 block mb-0.5">Ngũ Hành Nạp Âm</span>
-          <span className="font-bold text-slate-800 dark:text-amber-100 text-[11px]">
+        <div className="bg-gradient-to-br from-amber-50 to-amber-100/80 dark:from-oriental-dark-bg dark:to-oriental-dark-card p-3 rounded-2xl border border-amber-300/70 dark:border-oriental-dark-border shadow-2xs">
+          <span className="text-[10px] text-slate-500 dark:text-slate-400 block mb-0.5 font-medium">Ngũ Hành Nạp Âm</span>
+          <span className="font-extrabold text-slate-800 dark:text-amber-100 text-[11px]">
             {dayDetail.napAm}
           </span>
         </div>
 
-        <div className="bg-amber-50/60 dark:bg-oriental-dark-bg/70 p-2.5 rounded-xl border border-amber-200/70 dark:border-oriental-dark-border">
-          <span className="text-[10px] text-slate-500 dark:text-slate-400 block mb-0.5">Tiết Khí & Trực</span>
-          <span className="font-bold text-slate-800 dark:text-amber-100 text-[11px]">
+        <div className="bg-gradient-to-br from-amber-50 to-amber-100/80 dark:from-oriental-dark-bg dark:to-oriental-dark-card p-3 rounded-2xl border border-amber-300/70 dark:border-oriental-dark-border shadow-2xs">
+          <span className="text-[10px] text-slate-500 dark:text-slate-400 block mb-0.5 font-medium">Tiết Khí & Trực</span>
+          <span className="font-extrabold text-slate-800 dark:text-amber-100 text-[11px]">
             Trực {dayDetail.truc}
           </span>
         </div>
@@ -177,19 +177,19 @@ Trải nghiệm ứng dụng tại An Lịch AI!`;
 
       {/* Events & Personal Events List */}
       {(dayFestivals.length > 0 || dayPersonalEvents.length > 0) && (
-        <div className="space-y-1.5 pt-1">
+        <div className="space-y-2 pt-1">
           {dayFestivals.map((ev) => (
             <div
               key={ev.id}
-              className="p-2 rounded-xl text-xs font-bold text-white shadow-2xs flex items-center justify-between"
+              className="p-2.5 rounded-2xl text-xs font-bold text-white shadow-sm flex items-center justify-between"
               style={{ backgroundColor: ev.color || '#D97706' }}
             >
-              <div className="flex items-center space-x-1.5 truncate">
+              <div className="flex items-center space-x-2 truncate">
                 <span>🏮</span>
                 <span className="truncate">{ev.name}</span>
               </div>
-              <span className="text-[10px] bg-black/20 px-1.5 py-0.5 rounded-md font-normal shrink-0">
-                Sự kiện
+              <span className="text-[10px] bg-black/25 px-2 py-0.5 rounded-lg font-bold shrink-0">
+                Lễ Hội
               </span>
             </div>
           ))}
@@ -197,15 +197,15 @@ Trải nghiệm ứng dụng tại An Lịch AI!`;
           {dayPersonalEvents.map((pe) => (
             <div
               key={pe.id}
-              className="p-2 rounded-xl text-xs font-bold text-white shadow-2xs flex items-center justify-between"
+              className="p-2.5 rounded-2xl text-xs font-bold text-white shadow-sm flex items-center justify-between"
               style={{ backgroundColor: pe.color || '#991B1B' }}
             >
-              <div className="flex items-center space-x-1.5 truncate">
+              <div className="flex items-center space-x-2 truncate">
                 <span>📌</span>
                 <span className="truncate">{pe.title}</span>
               </div>
-              <span className="text-[10px] bg-black/20 px-1.5 py-0.5 rounded-md font-normal shrink-0">
-                Lịch cá nhân
+              <span className="text-[10px] bg-black/25 px-2 py-0.5 rounded-lg font-bold shrink-0">
+                Lịch Cá Nhân
               </span>
             </div>
           ))}
@@ -213,21 +213,21 @@ Trải nghiệm ứng dụng tại An Lịch AI!`;
       )}
 
       {/* 6 Giờ Hoàng Đạo & 6 Giờ Hắc Đạo */}
-      <div className="space-y-2 pt-1">
+      <div className="space-y-2.5 pt-1">
         <h4 className="font-serif font-bold text-xs text-oriental-red-900 dark:text-oriental-gold-400 flex items-center gap-1.5">
-          <Clock className="w-3.5 h-3.5 text-amber-500" />
+          <Clock className="w-4 h-4 text-amber-500" />
           Khung Giờ Hoàng Đạo & Hắc Đạo
         </h4>
 
         {/* 6 Giờ Hoàng Đạo */}
-        <div className="bg-emerald-50/70 dark:bg-emerald-950/20 p-3 rounded-2xl border border-emerald-200 dark:border-emerald-900/40 text-xs">
-          <span className="font-bold text-emerald-800 dark:text-emerald-400 flex items-center gap-1 mb-1.5 text-[11px]">
-            <CheckCircle2 className="w-3.5 h-3.5" /> 6 Giờ Hoàng Đạo (Giờ Tốt):
+        <div className="bg-emerald-50/80 dark:bg-emerald-950/30 p-3 rounded-2xl border border-emerald-200 dark:border-emerald-900/50 text-xs shadow-2xs">
+          <span className="font-bold text-emerald-800 dark:text-emerald-400 flex items-center gap-1.5 mb-2 text-[11px]">
+            <CheckCircle2 className="w-4 h-4 text-emerald-600" /> 6 Giờ Hoàng Đạo (Giờ Tốt):
           </span>
 
           <div className="grid grid-cols-2 gap-1.5 text-[11px]">
             {dayDetail.hoangDaoHours.map((h, i) => (
-              <div key={i} className="flex items-center justify-between bg-white/80 dark:bg-oriental-dark-card px-2 py-1 rounded-lg border border-emerald-200/60 dark:border-emerald-900/30">
+              <div key={i} className="flex items-center justify-between bg-white/90 dark:bg-oriental-dark-card px-2.5 py-1.5 rounded-xl border border-emerald-200/80 dark:border-emerald-900/40">
                 <span className="font-bold text-emerald-900 dark:text-emerald-300">{h.name}</span>
                 <span className="font-mono text-slate-600 dark:text-slate-400 text-[10px]">{h.timeRange}</span>
               </div>
@@ -236,14 +236,14 @@ Trải nghiệm ứng dụng tại An Lịch AI!`;
         </div>
 
         {/* 6 Giờ Hắc Đạo */}
-        <div className="bg-rose-50/70 dark:bg-rose-950/20 p-3 rounded-2xl border border-rose-200 dark:border-rose-900/40 text-xs">
-          <span className="font-bold text-rose-800 dark:text-rose-400 flex items-center gap-1 mb-1.5 text-[11px]">
-            <AlertTriangle className="w-3.5 h-3.5" /> 6 Giờ Hắc Đạo (Giờ Xấu):
+        <div className="bg-rose-50/80 dark:bg-rose-950/30 p-3 rounded-2xl border border-rose-200 dark:border-rose-900/50 text-xs shadow-2xs">
+          <span className="font-bold text-rose-800 dark:text-rose-400 flex items-center gap-1.5 mb-2 text-[11px]">
+            <AlertTriangle className="w-4 h-4 text-rose-600" /> 6 Giờ Hắc Đạo (Giờ Xấu):
           </span>
 
           <div className="grid grid-cols-2 gap-1.5 text-[11px]">
             {dayDetail.hacDaoHours.map((h, i) => (
-              <div key={i} className="flex items-center justify-between bg-white/80 dark:bg-oriental-dark-card px-2 py-1 rounded-lg border border-rose-200/60 dark:border-rose-900/30">
+              <div key={i} className="flex items-center justify-between bg-white/90 dark:bg-oriental-dark-card px-2.5 py-1.5 rounded-xl border border-rose-200/80 dark:border-rose-900/40">
                 <span className="font-bold text-rose-900 dark:text-rose-300">{h.name}</span>
                 <span className="font-mono text-slate-600 dark:text-slate-400 text-[10px]">{h.timeRange}</span>
               </div>
@@ -254,12 +254,12 @@ Trải nghiệm ứng dụng tại An Lịch AI!`;
       </div>
 
       {/* Lý Thuần Phong Xuất Hành Hours */}
-      <div className="bg-amber-50/60 dark:bg-oriental-dark-bg/60 rounded-2xl border border-amber-200/70 dark:border-oriental-dark-border overflow-hidden">
+      <div className="bg-amber-50/80 dark:bg-oriental-dark-bg/80 rounded-2xl border border-amber-300/70 dark:border-oriental-dark-border overflow-hidden shadow-2xs">
         <button
           onClick={() => setShowXuatHanhHours(!showXuatHanhHours)}
-          className="w-full p-3 text-left font-bold text-xs text-oriental-red-900 dark:text-oriental-gold-400 flex items-center justify-between"
+          className="w-full p-3 text-left font-bold text-xs text-oriental-red-900 dark:text-oriental-gold-400 flex items-center justify-between cursor-pointer"
         >
-          <span className="flex items-center gap-1.5">
+          <span className="flex items-center gap-2">
             <Compass className="w-4 h-4 text-amber-500" />
             Giờ Xuất Hành Lý Thuần Phong
           </span>
@@ -267,11 +267,11 @@ Trải nghiệm ứng dụng tại An Lịch AI!`;
         </button>
 
         {showXuatHanhHours && (
-          <div className="p-3 pt-0 space-y-1.5 border-t border-amber-200/40 dark:border-amber-900/30 text-xs">
+          <div className="p-3 pt-0 space-y-2 border-t border-amber-200/60 dark:border-amber-900/40 text-xs">
             {xuatHanhHours.map((xh, idx) => (
               <div
                 key={idx}
-                className="p-2 rounded-xl bg-white dark:bg-oriental-dark-card border border-amber-200/50 text-[11px] leading-relaxed"
+                className="p-2.5 rounded-xl bg-white dark:bg-oriental-dark-card border border-amber-200/70 text-[11px] leading-relaxed shadow-2xs"
               >
                 <div className="flex items-center justify-between font-bold text-oriental-red-900 dark:text-oriental-gold-300 mb-0.5">
                   <span>{xh.hourName} ({xh.typeName})</span>
@@ -289,9 +289,9 @@ Trải nghiệm ứng dụng tại An Lịch AI!`;
         <button
           type="button"
           onClick={() => onAskAIAboutDate(dayDetail)}
-          className="w-full py-2.5 px-4 bg-oriental-red-800 hover:bg-oriental-red-900 text-oriental-gold-300 rounded-xl font-bold text-xs sm:text-sm flex items-center justify-center space-x-2 shadow-oriental transition-all border border-oriental-gold-500/40"
+          className="w-full py-3 px-4 bg-gradient-to-br from-oriental-red-800 to-oriental-red-950 hover:from-oriental-red-700 hover:to-oriental-red-900 text-oriental-gold-300 rounded-2xl font-bold text-xs sm:text-sm flex items-center justify-center space-x-2 shadow-oriental transition-all border border-oriental-gold-500/40 cursor-pointer active:scale-98"
         >
-          <Bot className="w-4 h-4 text-oriental-gold-400 animate-bounce" />
+          <Bot className="w-4.5 h-4.5 text-oriental-gold-300 animate-bounce" />
           <span>🔮 Hỏi Trợ Lý AI Luận Ngày {dayDetail.solarDay}/{dayDetail.solarMonth}</span>
         </button>
       )}
