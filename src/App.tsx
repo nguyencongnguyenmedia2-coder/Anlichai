@@ -60,6 +60,18 @@ export const App: React.FC = () => {
     });
   }, []);
 
+  // SEO: Update dynamic Document Title based on Active Tab
+  useEffect(() => {
+    const titles: Record<string, string> = {
+      calendar: 'Lịch Âm Dương Việt Nam - Xem Ngày Cát Tường & Giờ Hoàng Đạo | An Lịch AI',
+      personal: 'Quản Lý Lịch Cá Nhân - Nhắc Giỗ, Sinh Nhật Âm Lịch | An Lịch AI',
+      events: 'Danh Sách Lễ Hội & Ngày Lễ Quốc Gia Việt Nam | An Lịch AI',
+      ai: 'Trợ Lý AI Phong Thủy & Tử Vi 12 Con Giáp | An Lịch AI',
+      settings: 'Cài Đặt Ứng Dụng | An Lịch AI'
+    };
+    document.title = titles[activeTab] || 'An Lịch AI - Xem Ngày Cát Tường • Tử Vi 12 Con Giáp';
+  }, [activeTab]);
+
 
 
   // SECRET ENTRANCE 1: Direct URL Link check (#admin, ?admin=true, ?mode=admin)
