@@ -220,7 +220,8 @@ export const lunarService = {
     // Find Matching Events
     const allEvents = storageService.getEvents();
     const matchingEvents = allEvents.filter(e => {
-      if (e.isLunar !== false) {
+      const isLunarEvent = Boolean(e.isLunar);
+      if (isLunarEvent) {
         return e.lunarDay === lunarDay && e.lunarMonth === lunarMonth;
       } else {
         return e.solarDay === day && e.solarMonth === month;
@@ -349,5 +350,61 @@ export const lunarService = {
     }
 
     return days;
+  },
+
+  // Calculate next occurrence date and countdown days for an event
+  getNextEventOccurrence(event: { isLunar?: boolean; lunarDay?: number; lunarMonth?: number; solarDay?: number; solarMonth?: number }): { nextDate: Date; daysRemaining: number } {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const currentYear = today.getFullYear();
+
+    if (!event.isLunar && event.solarDay && event.solarMonth) {
+      let target = new Date(currentYear, event.solarMonth - 1, event.solarDay);
+      target.setHours(0, 0, 0, 0);
+      if (target < today) {
+        target = new Date(currentYear + 1, event.solarMonth - 1, event.solarDay);
+        target.setHours(0, 0, 0, 0);
+      }
+      const diffTime = target.getTime() - today.getTime();
+      const daysRemaining = Math.round(diffTime / (1000 * 60 * 60 * 24));
+      return { nextDate: target, daysRemaining };
+    }
+
+    if (event.isLunar && event.lunarDay && event.lunarMonth && event.lunarDay > 0 && event.lunarMonth > 0) {
+      // Find matching lunar date in current year or next year
+      for (let y = currentYear; y <= currentYear + 2; y++) {
+        const startOfYear = new Date(y, 0, 1);
+        const endOfYear = new Date(y, 11, 31);
+        let curr = new Date(startOfYear);
+
+        while (curr <= endOfYear) {
+          try {
+            const solar = Solar.fromDate(curr);
+            const lunar = solar.getLunar();
+            const lMonth = Math.abs(lunar.getMonth());
+            const lDay = lunar.getDay();
+            
+            // Special check for Giao Thừa / 30 Tết (If month 12 has only 29 days, day 29 is Giao Thừa)
+            const isMatch = (lMonth === event.lunarMonth && lDay === event.lunarDay) ||
+              (event.lunarMonth === 12 && event.lunarDay === 30 && lMonth === 12 && lDay === 29 && lunar.getSolar().next(1).getLunar().getDay() === 1);
+
+            if (isMatch) {
+              curr.setHours(0, 0, 0, 0);
+              if (curr >= today) {
+                const diffTime = curr.getTime() - today.getTime();
+                const daysRemaining = Math.round(diffTime / (1000 * 60 * 60 * 24));
+                return { nextDate: curr, daysRemaining };
+              }
+            }
+          } catch {
+            // ignore
+          }
+          curr.setDate(curr.getDate() + 1);
+        }
+      }
+    }
+
+    // Fallback if event date has not been matched
+    return { nextDate: today, daysRemaining: 999 };
   }
 };

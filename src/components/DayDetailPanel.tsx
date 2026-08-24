@@ -41,6 +41,7 @@ export const DayDetailPanel: React.FC<DayDetailPanelProps> = ({
   );
 
   const handleShare = () => {
+    const currentUrl = window.location.href;
     const text = `📜 AN LỊCH AI (${weekdayName}, Ngày ${dayDetail.solarDay}/${dayDetail.solarMonth}/${dayDetail.solarYear})
 🗓 Dương Lịch: ${weekdayName}, ${dayDetail.solarDay}/${dayDetail.solarMonth}/${dayDetail.solarYear}
 🌙 Âm Lịch: Mùng ${dayDetail.lunarDay} Tháng ${dayDetail.lunarMonthName} (Can Chi: ${dayDetail.canChiDay})
@@ -48,16 +49,17 @@ export const DayDetailPanel: React.FC<DayDetailPanelProps> = ({
 ✨ Nạp Âm: ${dayDetail.napAm} • Trực ${dayDetail.truc}
 ⏰ 6 Giờ Hoàng Đạo: ${dayDetail.hoangDaoHours.map(h => h.name.replace('Giờ ', '')).join(', ')}
 👉 Hướng Xuất Hành: ${dayDetail.xuatHanhDirections.taiThan}, ${dayDetail.xuatHanhDirections.hyThan}
-Trải nghiệm ứng dụng tại An Lịch AI!`;
+🔗 Xem chi tiết tại: ${currentUrl}`;
 
     if (navigator.share) {
       navigator.share({
         title: `Lịch Âm Dương ${weekdayName} Ngày ${dayDetail.solarDay}/${dayDetail.solarMonth}`,
         text: text,
+        url: currentUrl
       }).catch(() => {});
     } else {
       navigator.clipboard.writeText(text);
-      alert('Đã sao chép thông tin ngày vào bộ nhớ tạm! Bạn có thể dán chia sẻ qua Facebook hoặc Zalo.');
+      alert('Đã sao chép thông tin kèm đường dẫn chia sẻ vào bộ nhớ tạm! Bạn có thể dán gửi qua Facebook hoặc Zalo.');
     }
   };
 

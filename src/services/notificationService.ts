@@ -33,15 +33,24 @@ export const notificationService = {
     const today = new Date();
     const detail = lunarService.getDayDetail(today);
 
-    // Festival & Holiday Events Check
-    if (detail.events && detail.events.length > 0) {
-      detail.events.forEach((ev) => {
+    // Festival & Holiday Events Check (Today & Countdown Reminders)
+    const allEvents = storageService.getEvents();
+    allEvents.forEach((ev) => {
+      if (!ev.notify) return;
+      const { daysRemaining } = lunarService.getNextEventOccurrence(ev);
+      
+      if (daysRemaining === 0) {
         this.sendNotification(
-          `🔔 Lễ Hội Hôm Nay: ${ev.name}`,
-          ev.description || `Hôm nay là ${ev.name}. Chúc bạn một ngày may mắn!`
+          `🎉 Hôm Nay: ${ev.name}`,
+          ev.description || `Hôm nay là ngày diễn ra ${ev.name}. An Lịch AI chúc bạn một ngày an lành!`
         );
-      });
-    }
+      } else if (daysRemaining > 0 && daysRemaining <= 3) {
+        this.sendNotification(
+          `⏳ Sắp Đến Lễ Hội (Còn ${daysRemaining} ngày nữa)`,
+          `📅 Ngày ${ev.name} sẽ diễn ra trong ${daysRemaining} ngày tới (${ev.description || 'Xem chi tiết trong app An Lịch AI'})`
+        );
+      }
+    });
 
     // Check Personal Events Reminders (Dương & Âm Lịch)
     const personalEvents = storageService.getPersonalEvents();

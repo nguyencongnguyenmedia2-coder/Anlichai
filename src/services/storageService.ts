@@ -5,16 +5,6 @@ const EVENTS_KEY = 'lich_am_duong_events_v2';
 const PERSONAL_EVENTS_KEY = 'lich_am_duong_personal_events_v1';
 const CHAT_KEY = 'lich_am_duong_chat_history_v1';
 
-export const getBuiltinMasterKey = (): string => {
-  try {
-    return atob('c2stb3ItdjEtYWQ3Y2E1YWM5MTA4MzY3NTBhOGZhNWMyZTA4NGU2MTAwNThhYTUzZjg3NjNiYTc3YjQ3M2U0YWRjYWFlZTY4OQ==');
-  } catch {
-    return '';
-  }
-};
-
-export const BUILTIN_MASTER_KEY = getBuiltinMasterKey();
-
 const DEFAULT_SETTINGS: AppSettings = {
   theme: 'oriental',
   notificationsEnabled: true,
@@ -22,7 +12,7 @@ const DEFAULT_SETTINGS: AppSettings = {
   notifyBeforeDays: 1,
   bgType: 'default',
   customBgUrl: '',
-  geminiApiKey: import.meta.env.VITE_GEMINI_API_KEY || BUILTIN_MASTER_KEY,
+  geminiApiKey: '',
   geminiModel: 'google/gemini-2.5-flash',
   adminPin: '123456',
   timeZone: 'Asia/Ho_Chi_Minh',
@@ -99,8 +89,8 @@ export const storageService = {
       if (data) {
         const parsed = JSON.parse(data);
         const merged = { ...DEFAULT_SETTINGS, ...parsed };
-        if (!merged.geminiApiKey || merged.geminiApiKey.length < 10) {
-          merged.geminiApiKey = import.meta.env.VITE_GEMINI_API_KEY || BUILTIN_MASTER_KEY;
+        if (!merged.geminiApiKey) {
+          merged.geminiApiKey = '';
         }
         if (!merged.geminiModel || merged.geminiModel === 'gemini-2.0-flash' || merged.geminiModel === 'gemini-1.5-flash' || merged.geminiModel === 'gemini-3.6-flash') {
           merged.geminiModel = 'google/gemini-2.5-flash';
@@ -125,7 +115,11 @@ export const storageService = {
     try {
       const data = localStorage.getItem(EVENTS_KEY);
       if (data) {
-        return JSON.parse(data);
+        const parsed = JSON.parse(data);
+        // Merge or reset if invalid items exist
+        if (Array.isArray(parsed) && parsed.length >= DEFAULT_FESTIVAL_EVENTS.length) {
+          return parsed;
+        }
       }
     } catch (e) {
       console.error('Failed to load events', e);

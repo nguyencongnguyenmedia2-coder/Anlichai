@@ -26,17 +26,17 @@ export const SEOContent: React.FC = () => {
   return (
     <article className="mt-12 bg-white/80 dark:bg-oriental-dark-card/90 rounded-3xl p-6 sm:p-8 border border-amber-200/80 dark:border-oriental-dark-border shadow-lg backdrop-blur-md transition-all">
       
-      {/* Article Header */}
-      <header className="mb-6 border-b border-amber-200/60 dark:border-oriental-dark-border pb-4">
-        <div className="flex items-center space-x-2 text-oriental-red-800 dark:text-oriental-gold-400 font-bold text-xs mb-1">
+      {/* Article Header with Brand H1 / H2 Tags for Google */}
+      <header className="mb-6 border-b border-amber-200/60 dark:border-oriental-dark-border pb-4 space-y-2">
+        <div className="flex items-center space-x-2 text-oriental-red-800 dark:text-oriental-gold-400 font-bold text-xs">
           <BookOpen className="w-4 h-4" />
-          <span>CẨM NANG PHONG THỦY & KHÂM ĐỊNH LỊCH PHÁP</span>
+          <span>CẨM NANG LỊCH PHÁP & PHONG THỦY VIỆT NAM CHÍNH THỨC</span>
         </div>
-        <h2 className="text-xl sm:text-2xl font-serif font-black text-oriental-red-900 dark:text-oriental-gold-400 tracking-wide">
-          An Lịch AI - Nền Tảng Xem Lịch Âm Dương & Phong Thủy Việt Nam Hàng Đầu
-        </h2>
-        <p className="text-xs sm:text-sm text-amber-900/80 dark:text-amber-200/70 mt-1">
-          Triết lý: <strong>"Xem ngày • Hiểu mình • Sống an"</strong>
+        <h1 className="text-xl sm:text-2xl font-serif font-black text-oriental-red-900 dark:text-oriental-gold-400 tracking-wide">
+          An Lịch AI - Tra Cứu Lịch Âm Dương, Xem Ngày Hoàng Đạo & Tử Vi 12 Con Giáp
+        </h1>
+        <p className="text-xs sm:text-sm text-amber-900/80 dark:text-amber-200/70">
+          Chào mừng bạn đến với <strong>An Lịch AI</strong> (website: <strong>www.anlichai.online</strong>) - Nền tảng xem Lịch Âm Dương Việt Nam trực tuyến thế hệ mới. Với thông điệp <em>"Xem ngày • Hiểu mình • Sống an"</em>, <strong>An Lịch AI</strong> giúp bạn dễ dàng tra cứu lịch vạn niên, giờ tốt xuất hành, hướng Tài Thần, Hỷ Thần và quản lý sự kiện cá nhân trọn vẹn nhất.
         </p>
       </header>
 
@@ -44,32 +44,32 @@ export const SEOContent: React.FC = () => {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-5 mb-8 text-xs sm:text-sm">
         
         <section className="bg-amber-50/50 dark:bg-oriental-dark-bg/60 p-4 rounded-2xl border border-amber-200/60">
-          <h3 className="font-serif font-bold text-base text-oriental-red-900 dark:text-oriental-gold-400 mb-2 flex items-center gap-1.5">
+          <h2 className="font-serif font-bold text-base text-oriental-red-900 dark:text-oriental-gold-400 mb-2 flex items-center gap-1.5">
             <Sparkles className="w-4 h-4 text-amber-500" />
-            Lịch Vạn Niên 1900 - 2100
-          </h3>
+            Lịch Âm Dương An Lịch AI (1900 - 2100)
+          </h2>
           <p className="text-slate-700 dark:text-amber-200/80 leading-relaxed text-xs">
-            Tra cứu chuẩn xác ngày Dương Lịch, Âm Lịch, Thiên Can, Địa Chi, Nạp Âm Ngũ Hành, Trực (12 Trực) và Nhị Thập Bát Tú (28 Sao) hoàn toàn 100% bằng tiếng Việt thuần túy.
+            Tra cứu chuẩn xác Lịch Âm Dương hôm nay, Thiên Can, Địa Chi, Nạp Âm Ngũ Hành, 12 Trực và 28 Sao Nhị Thập Bát Tú hoàn toàn bằng tiếng Việt thuần túy.
           </p>
         </section>
 
         <section className="bg-amber-50/50 dark:bg-oriental-dark-bg/60 p-4 rounded-2xl border border-amber-200/60">
-          <h3 className="font-serif font-bold text-base text-oriental-red-900 dark:text-oriental-gold-400 mb-2 flex items-center gap-1.5">
+          <h2 className="font-serif font-bold text-base text-oriental-red-900 dark:text-oriental-gold-400 mb-2 flex items-center gap-1.5">
             <Star className="w-4 h-4 text-amber-500 fill-current" />
-            Tử Vi 12 Con Giáp Hàng Ngày
-          </h3>
+            Tử Vi 12 Con Giáp An Lịch AI
+          </h2>
           <p className="text-slate-700 dark:text-amber-200/80 leading-relaxed text-xs">
-            Phân tích vận trình sự nghiệp, tài lộc, tình duyên, sức khỏe, quý nhân phù trợ (Tam Hợp, Lục Hợp) và con số may mắn cho 12 con giáp mỗi ngày.
+            Phân tích chi tiết vận trình tử vi 12 con giáp hàng ngày (Tý, Sửu, Dần, Mão, Thìn, Tỵ, Ngọ, Mùi, Thân, Dậu, Tuất, Hợi), hợp xung tuổi, quý nhân phù trợ và con số may mắn.
           </p>
         </section>
 
         <section className="bg-amber-50/50 dark:bg-oriental-dark-bg/60 p-4 rounded-2xl border border-amber-200/60">
-          <h3 className="font-serif font-bold text-base text-oriental-red-900 dark:text-oriental-gold-400 mb-2 flex items-center gap-1.5">
+          <h2 className="font-serif font-bold text-base text-oriental-red-900 dark:text-oriental-gold-400 mb-2 flex items-center gap-1.5">
             <ShieldCheck className="w-4 h-4 text-emerald-600" />
-            Trợ Lý AI Phong Thủy Gemini
-          </h3>
+            Góc Phong Thủy & Cẩm Nang Văn Khấn
+          </h2>
           <p className="text-slate-700 dark:text-amber-200/80 leading-relaxed text-xs">
-            Trợ lý trí tuệ nhân tạo Gemini 3.6 Flash tư vấn chuyên sâu ngày khai trương, động thổ, cưới hỏi, nhập trạch và giải đáp nghi lễ cúng giỗ dân gian với tốc độ siêu nhanh.
+            Trí tuệ dân gian đúc kết bài văn khấn mùng 1, văn khấn đêm Rằm, cẩm nang xem ngày tốt khai trương, nhập trạch, động thổ đầy đủ nhất tại An Lịch AI.
           </p>
         </section>
 

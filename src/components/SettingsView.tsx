@@ -17,12 +17,6 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
   onOpenAdminLogin,
   onExitAdminMode,
 }) => {
-  const [apiKey, setApiKey] = useState(settings.geminiApiKey || '');
-  const [model, setModel] = useState(
-    !settings.geminiModel || settings.geminiModel === 'gemini-3.6-flash'
-      ? 'gemini-2.0-flash'
-      : settings.geminiModel
-  );
   const [adminPin, setAdminPin] = useState(settings.adminPin || '123456');
   const [timeZone, setTimeZone] = useState(settings.timeZone || 'Asia/Ho_Chi_Minh');
   const [theme, setTheme] = useState<'light' | 'dark' | 'oriental'>(settings.theme);
@@ -52,8 +46,6 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
     e.preventDefault();
     const updated: AppSettings = {
       ...settings,
-      geminiApiKey: apiKey.trim(),
-      geminiModel: model,
       adminPin: adminPin.trim(),
       timeZone,
       theme,
@@ -247,50 +239,20 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
           </div>
         </div>
 
-        {/* Section 3: OpenRouter AI Config */}
-        <div className="bg-amber-100/60 dark:bg-amber-950/30 p-4 rounded-xl border border-oriental-gold-500/50 space-y-4">
+        {/* Section 3: AI Assistant Maintenance Notice */}
+        <div className="bg-amber-100/60 dark:bg-amber-950/30 p-4 rounded-xl border border-oriental-gold-500/50 space-y-3">
           <div className="flex items-center justify-between border-b border-amber-300/60 dark:border-amber-800 pb-2">
             <h3 className="font-serif font-bold text-sm text-oriental-red-900 dark:text-oriental-gold-400 flex items-center gap-2">
               <Key className="w-4 h-4 text-amber-600" />
-              Trợ Lý AI OpenRouter (Tích Hợp Sẵn)
+              Trạng Thái Trợ Lý AI Phong Thủy
             </h3>
-            <span className="text-xs text-emerald-700 dark:text-emerald-400 font-bold bg-emerald-100 dark:bg-emerald-950 px-2.5 py-0.5 rounded-full border border-emerald-300">
-              ✓ Hoạt Động Tự Động
+            <span className="text-xs text-amber-800 dark:text-amber-300 font-bold bg-amber-200/80 dark:bg-amber-900 px-2.5 py-0.5 rounded-full border border-amber-400">
+              🛠️ Đang Phát Triển & Bảo Trì
             </span>
           </div>
-
-          <div>
-            <label className="block font-medium text-slate-700 dark:text-amber-200 mb-1">
-              OpenRouter API Key (Tùy chọn thay thế key cá nhân)
-            </label>
-            <input
-              type="password"
-              value={apiKey}
-              onChange={(e) => setApiKey(e.target.value)}
-              placeholder="sk-or-v1-..."
-              className="w-full px-3 py-2 bg-white dark:bg-oriental-dark-card border border-amber-300 dark:border-amber-800 rounded-lg text-slate-800 dark:text-amber-100 focus:outline-none focus:ring-2 focus:ring-oriental-gold-500 font-mono text-xs sm:text-sm"
-            />
-            <p className="text-[11px] text-amber-900/70 dark:text-amber-300/60 mt-1">
-              * Hệ thống đã tích hợp sẵn OpenRouter Master Key. Người dùng và khách truy cập không cần nhập bất kỳ API Key nào vẫn dùng Trợ Lý AI bình thường.
-            </p>
-          </div>
-
-          <div>
-            <label className="block font-medium text-slate-700 dark:text-amber-200 mb-1">
-              Mô Hình AI Trả Lời (OpenRouter Model)
-            </label>
-            <select
-              value={model}
-              onChange={(e) => setModel(e.target.value)}
-              className="w-full px-3 py-2 bg-white dark:bg-oriental-dark-card border border-amber-300 dark:border-amber-800 rounded-lg text-slate-800 dark:text-amber-100 focus:outline-none focus:ring-2 focus:ring-oriental-gold-500 font-medium text-xs sm:text-sm"
-            >
-              <option value="google/gemini-2.5-flash">google/gemini-2.5-flash (OpenRouter - Nhanh & Mới Nhất)</option>
-              <option value="google/gemini-2.0-flash-001">google/gemini-2.0-flash-001 (OpenRouter)</option>
-              <option value="deepseek/deepseek-chat">deepseek/deepseek-chat (OpenRouter)</option>
-              <option value="openai/gpt-4o-mini">openai/gpt-4o-mini (OpenRouter)</option>
-              <option value="meta-llama/llama-3.3-70b-instruct">meta-llama/llama-3.3-70b-instruct (OpenRouter)</option>
-            </select>
-          </div>
+          <p className="text-xs text-slate-700 dark:text-amber-200/80 leading-relaxed">
+            Tính năng Trợ Lý AI hiện đang được bảo trì và nâng cấp thuật toán chuyên sâu để nâng cao chất lượng phản hồi âm dương ngũ hành.
+          </p>
         </div>
 
         {/* Section 4: Admin Security Configuration (Admin Only) */}

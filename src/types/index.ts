@@ -133,6 +133,27 @@ export interface ZodiacHoroscope {
   luckyColors: string[];
 }
 
+export interface BlogSection {
+  heading: string;
+  body: string;
+  bulletPoints?: string[];
+  callout?: string;
+}
+
+export interface BlogPost {
+  id: string;
+  slug: string;
+  title: string;
+  summary: string;
+  content?: string;
+  sections?: BlogSection[];
+  category: 'phong-thuy' | 'lich-am' | 'tu-vi' | 'van-khan';
+  author: string;
+  publishedDate: string;
+  readTime: string;
+  tags: string[];
+}
+
 declare global {
   interface Window {
     electronAPI?: {

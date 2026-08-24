@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
-import { Calendar, Compass, Bot, Settings, Moon, Sun, Sparkles, ShieldCheck, Star, CalendarCheck } from 'lucide-react';
+import { Calendar, Compass, Bot, Settings, Moon, Sun, Sparkles, ShieldCheck, Star, CalendarCheck, BookOpen } from 'lucide-react';
 import { AppSettings } from '../types';
 import logoImg from '../assets/logo.png';
 
 interface HeaderProps {
-  activeTab: 'calendar' | 'events' | 'personal' | 'ai' | 'settings';
-  setActiveTab: (tab: 'calendar' | 'events' | 'personal' | 'ai' | 'settings') => void;
+  activeTab: 'calendar' | 'events' | 'personal' | 'blog' | 'ai' | 'settings';
+  setActiveTab: (tab: 'calendar' | 'events' | 'personal' | 'blog' | 'ai' | 'settings') => void;
   settings: AppSettings;
   onUpdateSettings: (newSettings: AppSettings) => void;
   onJumpToToday: () => void;
@@ -79,7 +79,7 @@ export const Header: React.FC<HeaderProps> = ({
             <nav className="hidden md:flex items-center space-x-1 bg-amber-100/60 dark:bg-oriental-dark-bg/80 p-1.5 rounded-2xl border border-amber-200/70 dark:border-oriental-dark-border shadow-2xs">
               <button
                 onClick={() => setActiveTab('calendar')}
-                className={`flex items-center space-x-2 px-4 py-2 rounded-xl font-bold text-xs sm:text-sm transition-all duration-200 ${
+                className={`flex items-center space-x-2 px-3.5 py-2 rounded-xl font-bold text-xs sm:text-sm transition-all duration-200 ${
                   activeTab === 'calendar'
                     ? 'bg-gradient-to-r from-oriental-red-800 to-oriental-red-900 text-oriental-gold-300 shadow-oriental border border-oriental-gold-500/40 scale-[1.02]'
                     : 'text-slate-700 dark:text-amber-200/80 hover:bg-amber-200/60 dark:hover:bg-amber-900/40'
@@ -91,31 +91,43 @@ export const Header: React.FC<HeaderProps> = ({
 
               <button
                 onClick={() => setActiveTab('personal')}
-                className={`flex items-center space-x-2 px-4 py-2 rounded-xl font-bold text-xs sm:text-sm transition-all duration-200 ${
+                className={`flex items-center space-x-2 px-3.5 py-2 rounded-xl font-bold text-xs sm:text-sm transition-all duration-200 ${
                   activeTab === 'personal'
                     ? 'bg-gradient-to-r from-oriental-red-800 to-oriental-red-900 text-oriental-gold-300 shadow-oriental border border-oriental-gold-500/40 scale-[1.02]'
                     : 'text-slate-700 dark:text-amber-200/80 hover:bg-amber-200/60 dark:hover:bg-amber-900/40'
                 }`}
               >
                 <CalendarCheck className="w-4 h-4 text-oriental-gold-400" />
-                <span>Lịch Cá Nhân</span>
+                <span>Cá Nhân</span>
               </button>
 
               <button
                 onClick={() => setActiveTab('events')}
-                className={`flex items-center space-x-2 px-4 py-2 rounded-xl font-bold text-xs sm:text-sm transition-all duration-200 ${
+                className={`flex items-center space-x-2 px-3.5 py-2 rounded-xl font-bold text-xs sm:text-sm transition-all duration-200 ${
                   activeTab === 'events'
                     ? 'bg-gradient-to-r from-oriental-red-800 to-oriental-red-900 text-oriental-gold-300 shadow-oriental border border-oriental-gold-500/40 scale-[1.02]'
                     : 'text-slate-700 dark:text-amber-200/80 hover:bg-amber-200/60 dark:hover:bg-amber-900/40'
                 }`}
               >
                 <Compass className="w-4 h-4" />
-                <span>Lễ Hội & Sự Kiện</span>
+                <span>Lễ Hội</span>
+              </button>
+
+              <button
+                onClick={() => setActiveTab('blog')}
+                className={`flex items-center space-x-2 px-3.5 py-2 rounded-xl font-bold text-xs sm:text-sm transition-all duration-200 ${
+                  activeTab === 'blog'
+                    ? 'bg-gradient-to-r from-oriental-red-800 to-oriental-red-900 text-oriental-gold-300 shadow-oriental border border-oriental-gold-500/40 scale-[1.02]'
+                    : 'text-slate-700 dark:text-amber-200/80 hover:bg-amber-200/60 dark:hover:bg-amber-900/40'
+                }`}
+              >
+                <BookOpen className="w-4 h-4 text-oriental-gold-400" />
+                <span>Góc Phong Thủy</span>
               </button>
 
               <button
                 onClick={() => setActiveTab('ai')}
-                className={`relative flex items-center space-x-2 px-4 py-2 rounded-xl font-bold text-xs sm:text-sm transition-all duration-200 ${
+                className={`relative flex items-center space-x-2 px-3.5 py-2 rounded-xl font-bold text-xs sm:text-sm transition-all duration-200 ${
                   activeTab === 'ai'
                     ? 'bg-gradient-to-r from-oriental-red-800 to-oriental-red-900 text-oriental-gold-300 shadow-oriental border border-oriental-gold-500/40 scale-[1.02]'
                     : 'text-slate-700 dark:text-amber-200/80 hover:bg-amber-200/60 dark:hover:bg-amber-900/40'
@@ -128,7 +140,7 @@ export const Header: React.FC<HeaderProps> = ({
               {isAdminMode && (
                 <button
                   onClick={() => setActiveTab('settings')}
-                  className={`flex items-center space-x-2 px-4 py-2 rounded-xl font-bold text-xs sm:text-sm transition-all duration-200 ${
+                  className={`flex items-center space-x-2 px-3.5 py-2 rounded-xl font-bold text-xs sm:text-sm transition-all duration-200 ${
                     activeTab === 'settings'
                       ? 'bg-gradient-to-r from-oriental-red-800 to-oriental-red-900 text-oriental-gold-300 shadow-oriental border border-oriental-gold-500/40 scale-[1.02]'
                       : 'text-slate-700 dark:text-amber-200/80 hover:bg-amber-200/60 dark:hover:bg-amber-900/40'
@@ -188,13 +200,13 @@ export const Header: React.FC<HeaderProps> = ({
       </header>
 
       {/* Floating Bottom Navigation Bar for Mobile (< 768px) */}
-      <div className="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-amber-50/98 dark:bg-oriental-dark-card/98 backdrop-blur-xl border-t border-amber-200/90 dark:border-oriental-dark-border px-2 py-1.5 shadow-2xl pb-safe">
+      <div className="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-amber-50/98 dark:bg-oriental-dark-card/98 backdrop-blur-xl border-t border-amber-200/90 dark:border-oriental-dark-border px-1.5 py-1.5 shadow-2xl pb-safe">
         <div className="flex items-center justify-around max-w-md mx-auto">
           
           <button
             onClick={() => setActiveTab('calendar')}
             aria-label="Xem Lịch Tháng"
-            className={`flex flex-col items-center justify-center py-1.5 px-3 rounded-xl transition-all active:scale-95 min-w-[48px] min-h-[48px] ${
+            className={`flex flex-col items-center justify-center py-1.5 px-2 rounded-xl transition-all active:scale-95 min-w-[44px] min-h-[44px] ${
               activeTab === 'calendar'
                 ? 'text-oriental-gold-300 bg-oriental-red-800 font-bold shadow-oriental scale-105 border border-oriental-gold-500/30'
                 : 'text-slate-800 dark:text-amber-100 hover:text-oriental-red-800'
@@ -207,7 +219,7 @@ export const Header: React.FC<HeaderProps> = ({
           <button
             onClick={() => setActiveTab('personal')}
             aria-label="Xem Lịch Cá Nhân"
-            className={`flex flex-col items-center justify-center py-1.5 px-3 rounded-xl transition-all active:scale-95 min-w-[48px] min-h-[48px] ${
+            className={`flex flex-col items-center justify-center py-1.5 px-2 rounded-xl transition-all active:scale-95 min-w-[44px] min-h-[44px] ${
               activeTab === 'personal'
                 ? 'text-oriental-gold-300 bg-oriental-red-800 font-bold shadow-oriental scale-105 border border-oriental-gold-500/30'
                 : 'text-slate-800 dark:text-amber-100 hover:text-oriental-red-800'
@@ -220,7 +232,7 @@ export const Header: React.FC<HeaderProps> = ({
           <button
             onClick={() => setActiveTab('events')}
             aria-label="Xem Danh Sách Lễ Hội"
-            className={`flex flex-col items-center justify-center py-1.5 px-3 rounded-xl transition-all active:scale-95 min-w-[48px] min-h-[48px] ${
+            className={`flex flex-col items-center justify-center py-1.5 px-2 rounded-xl transition-all active:scale-95 min-w-[44px] min-h-[44px] ${
               activeTab === 'events'
                 ? 'text-oriental-gold-300 bg-oriental-red-800 font-bold shadow-oriental scale-105 border border-oriental-gold-500/30'
                 : 'text-slate-800 dark:text-amber-100 hover:text-oriental-red-800'
@@ -231,9 +243,22 @@ export const Header: React.FC<HeaderProps> = ({
           </button>
 
           <button
+            onClick={() => setActiveTab('blog')}
+            aria-label="Góc Phong Thủy"
+            className={`flex flex-col items-center justify-center py-1.5 px-2 rounded-xl transition-all active:scale-95 min-w-[44px] min-h-[44px] ${
+              activeTab === 'blog'
+                ? 'text-oriental-gold-300 bg-oriental-red-800 font-bold shadow-oriental scale-105 border border-oriental-gold-500/30'
+                : 'text-slate-800 dark:text-amber-100 hover:text-oriental-red-800'
+            }`}
+          >
+            <BookOpen className="w-4 h-4 mb-0.5" />
+            <span className="text-[10px] leading-none font-semibold">Phong Thủy</span>
+          </button>
+
+          <button
             onClick={() => setActiveTab('ai')}
             aria-label="Trợ Lý AI Phong Thủy"
-            className={`flex flex-col items-center justify-center py-1.5 px-3 rounded-xl transition-all relative active:scale-95 min-w-[48px] min-h-[48px] ${
+            className={`flex flex-col items-center justify-center py-1.5 px-2 rounded-xl transition-all relative active:scale-95 min-w-[44px] min-h-[44px] ${
               activeTab === 'ai'
                 ? 'text-oriental-gold-300 bg-oriental-red-800 font-bold shadow-oriental scale-105 border border-oriental-gold-500/30'
                 : 'text-slate-800 dark:text-amber-100 hover:text-oriental-red-800'
@@ -242,21 +267,6 @@ export const Header: React.FC<HeaderProps> = ({
             <Bot className="w-4 h-4 mb-0.5" />
             <span className="text-[10px] leading-none font-semibold">Trợ Lý AI</span>
           </button>
-
-          {isAdminMode && (
-            <button
-              onClick={() => setActiveTab('settings')}
-              aria-label="Cài Đặt Ứng Dụng"
-              className={`flex flex-col items-center justify-center py-1.5 px-3 rounded-xl transition-all active:scale-95 min-w-[48px] min-h-[48px] ${
-                activeTab === 'settings'
-                  ? 'text-oriental-gold-300 bg-oriental-red-800 font-bold shadow-oriental scale-105 border border-oriental-gold-500/30'
-                  : 'text-slate-800 dark:text-amber-100 hover:text-oriental-red-800'
-              }`}
-            >
-              <Settings className="w-4 h-4 mb-0.5" />
-              <span className="text-[10px] leading-none font-semibold">Cài Đặt</span>
-            </button>
-          )}
 
         </div>
       </div>

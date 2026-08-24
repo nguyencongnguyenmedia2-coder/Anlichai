@@ -16,18 +16,119 @@ import { storageService } from './services/storageService';
 import { lunarService } from './services/lunarService';
 import { notificationService } from './services/notificationService';
 
+import { BlogView } from './components/BlogView';
+
 export const App: React.FC = () => {
-  const [activeTab, setActiveTab] = useState<'calendar' | 'events' | 'personal' | 'ai' | 'settings'>('calendar');
-  // Always default to today's current date
-  const [currentDate, setCurrentDate] = useState<Date>(() => new Date());
-  const [selectedDate, setSelectedDate] = useState<Date>(() => new Date());
+  // Tab to Slug mappings
+  const TAB_TO_SLUG: Record<string, string> = {
+    calendar: 'lich-thang',
+    personal: 'lich-ca-nhan',
+    events: 'le-hoi-su-kien',
+    blog: 'goc-phong-thuy',
+    ai: 'tro-ly-ai',
+    settings: 'cai-dat'
+  };
+
+  const SLUG_TO_TAB: Record<string, 'calendar' | 'events' | 'personal' | 'blog' | 'ai' | 'settings'> = {
+    'lich-thang': 'calendar',
+    'lich-ca-nhan': 'personal',
+    'le-hoi-su-kien': 'events',
+    'goc-phong-thuy': 'blog',
+    'tro-ly-ai': 'ai',
+    'cai-dat': 'settings',
+    'tu-vi': 'calendar' // 'tu-vi' opens horoscope modal on calendar tab
+  };
+
+  // Helper to parse current URL state
+  const parseUrlState = () => {
+    const pathname = window.location.pathname.replace(/^\/+|\/+$/g, '');
+    const searchParams = new URLSearchParams(window.location.search);
+
+    let matchedTab: 'calendar' | 'events' | 'personal' | 'blog' | 'ai' | 'settings' = 'calendar';
+    let isHoroscope = false;
+
+    if (SLUG_TO_TAB[pathname]) {
+      matchedTab = SLUG_TO_TAB[pathname];
+      if (pathname === 'tu-vi') {
+        isHoroscope = true;
+      }
+    }
+
+    // Check date param (YYYY-MM-DD)
+    const dateParam = searchParams.get('date');
+    let parsedDate: Date | null = null;
+    if (dateParam && /^\d{4}-\d{2}-\d{2}$/.exec(dateParam)) {
+      const parts = dateParam.split('-');
+      const d = new Date(parseInt(parts[0]), parseInt(parts[1]) - 1, parseInt(parts[2]));
+      if (!isNaN(d.getTime())) {
+        parsedDate = d;
+      }
+    }
+
+    return { matchedTab, isHoroscope, parsedDate };
+  };
+
+  const initialUrlState = parseUrlState();
+  const [activeTab, setActiveTabState] = useState<'calendar' | 'events' | 'personal' | 'blog' | 'ai' | 'settings'>(initialUrlState.matchedTab);
+  const [currentDate, setCurrentDate] = useState<Date>(() => initialUrlState.parsedDate || new Date());
+  const [selectedDate, setSelectedDate] = useState<Date>(() => initialUrlState.parsedDate || new Date());
   const [showWidget, setShowWidget] = useState<boolean>(true);
   const [settings, setSettings] = useState<AppSettings>(() => storageService.getSettings());
   const [selectedDayContext, setSelectedDayContext] = useState<DayDetail | null>(null);
   const [mobileDetailOpen, setMobileDetailOpen] = useState<boolean>(false);
   const [isAdminMode, setIsAdminMode] = useState<boolean>(false);
   const [adminModalOpen, setAdminModalOpen] = useState<boolean>(false);
-  const [horoscopeModalOpen, setHoroscopeModalOpen] = useState<boolean>(false);
+  const [horoscopeModalOpen, setHoroscopeModalOpen] = useState<boolean>(initialUrlState.isHoroscope);
+
+  // Sync state to URL bar (slug + query params)
+  const syncTabToUrl = (tab: 'calendar' | 'events' | 'personal' | 'blog' | 'ai' | 'settings', isHoroscope = false, dateToSync?: Date) => {
+    let slug = TAB_TO_SLUG[tab] || 'lich-thang';
+    if (isHoroscope) {
+      slug = 'tu-vi';
+    }
+
+    const currentPath = window.location.pathname.replace(/^\/+|\/+$/g, '');
+    const searchParams = new URLSearchParams(window.location.search);
+    
+    // Add or remove date param for calendar/horoscope
+    const targetDate = dateToSync || selectedDate;
+    if (tab === 'calendar' || isHoroscope) {
+      const year = targetDate.getFullYear();
+      const month = String(targetDate.getMonth() + 1).padStart(2, '0');
+      const day = String(targetDate.getDate()).padStart(2, '0');
+      searchParams.set('date', `${year}-${month}-${day}`);
+    } else {
+      searchParams.delete('date');
+    }
+
+    const newQuery = searchParams.toString() ? `?${searchParams.toString()}` : '';
+    const newUrl = `/${slug}${newQuery}`;
+
+    if (currentPath !== slug || window.location.search !== newQuery) {
+      window.history.pushState({ tab, isHoroscope }, '', newUrl);
+    }
+  };
+
+  const setActiveTab = (tab: 'calendar' | 'events' | 'personal' | 'blog' | 'ai' | 'settings') => {
+    setActiveTabState(tab);
+    syncTabToUrl(tab, false);
+  };
+
+  // Listen to browser Back / Forward buttons
+  useEffect(() => {
+    const handlePopState = () => {
+      const { matchedTab, isHoroscope, parsedDate } = parseUrlState();
+      setActiveTabState(matchedTab);
+      setHoroscopeModalOpen(isHoroscope);
+      if (parsedDate) {
+        setSelectedDate(parsedDate);
+        setCurrentDate(new Date(parsedDate.getFullYear(), parsedDate.getMonth(), 1));
+      }
+    };
+
+    window.addEventListener('popstate', handlePopState);
+    return () => window.removeEventListener('popstate', handlePopState);
+  }, []);
 
   const events = storageService.getEvents();
   const personalEvents = storageService.getPersonalEvents();
@@ -60,17 +161,22 @@ export const App: React.FC = () => {
     });
   }, []);
 
-  // SEO: Update dynamic Document Title based on Active Tab
+  // SEO: Update dynamic Document Title based on Active Tab & Horoscope
   useEffect(() => {
+    if (horoscopeModalOpen) {
+      document.title = 'Tử Vi 12 Con Giáp Hàng Ngày - An Lịch AI';
+      return;
+    }
     const titles: Record<string, string> = {
       calendar: 'Lịch Âm Dương Việt Nam - Xem Ngày Cát Tường & Giờ Hoàng Đạo | An Lịch AI',
       personal: 'Quản Lý Lịch Cá Nhân - Nhắc Giỗ, Sinh Nhật Âm Lịch | An Lịch AI',
       events: 'Danh Sách Lễ Hội & Ngày Lễ Quốc Gia Việt Nam | An Lịch AI',
+      blog: 'Góc Phong Thủy & Cẩm Nang Xem Ngày Tốt Âm Dương | An Lịch AI',
       ai: 'Trợ Lý AI Phong Thủy & Tử Vi 12 Con Giáp | An Lịch AI',
       settings: 'Cài Đặt Ứng Dụng | An Lịch AI'
     };
     document.title = titles[activeTab] || 'An Lịch AI - Xem Ngày Cát Tường • Tử Vi 12 Con Giáp';
-  }, [activeTab]);
+  }, [activeTab, horoscopeModalOpen]);
 
 
 
@@ -119,6 +225,7 @@ export const App: React.FC = () => {
     }
     setSelectedDayContext(lunarService.getDayDetail(date));
     setMobileDetailOpen(true);
+    syncTabToUrl(activeTab, horoscopeModalOpen, date);
   };
 
   const handleChangeMonth = (delta: number) => {
@@ -134,6 +241,7 @@ export const App: React.FC = () => {
     setCurrentDate(newDate);
     setSelectedDate(newSelected);
     setSelectedDayContext(lunarService.getDayDetail(newSelected));
+    syncTabToUrl(activeTab, horoscopeModalOpen, newSelected);
   };
 
   const handleSetMonthYear = (month: number, year: number) => {
@@ -145,6 +253,7 @@ export const App: React.FC = () => {
     setCurrentDate(newDate);
     setSelectedDate(newSelected);
     setSelectedDayContext(lunarService.getDayDetail(newSelected));
+    syncTabToUrl(activeTab, horoscopeModalOpen, newSelected);
   };
 
   const handleJumpToToday = () => {
@@ -152,7 +261,19 @@ export const App: React.FC = () => {
     setCurrentDate(today);
     setSelectedDate(today);
     setSelectedDayContext(lunarService.getDayDetail(today));
-    setActiveTab('calendar');
+    setHoroscopeModalOpen(false);
+    setActiveTabState('calendar');
+    syncTabToUrl('calendar', false, today);
+  };
+
+  const handleOpenHoroscope = () => {
+    setHoroscopeModalOpen(true);
+    syncTabToUrl('calendar', true, selectedDate);
+  };
+
+  const handleCloseHoroscope = () => {
+    setHoroscopeModalOpen(false);
+    syncTabToUrl(activeTab, false, selectedDate);
   };
 
   const handleAskAIAboutDate = (dayDetail: DayDetail) => {
@@ -182,7 +303,7 @@ export const App: React.FC = () => {
         settings={settings}
         onUpdateSettings={handleUpdateSettings}
         onJumpToToday={handleJumpToToday}
-        onOpenHoroscope={() => setHoroscopeModalOpen(true)}
+        onOpenHoroscope={handleOpenHoroscope}
         currentDate={currentDate}
         isAdminMode={isAdminMode}
         onOpenAdminLogin={() => setAdminModalOpen(true)}
@@ -273,6 +394,11 @@ export const App: React.FC = () => {
           />
         )}
 
+        {/* TAB 4: BLOG SEO ARTICLES VIEW */}
+        {activeTab === 'blog' && (
+          <BlogView />
+        )}
+
         {/* TAB 4: GEMINI AI CHATBOT ASSISTANT */}
         {activeTab === 'ai' && (
           <AIChatView
@@ -304,7 +430,7 @@ export const App: React.FC = () => {
         <HoroscopeModal
           dayDetail={currentSelectedDayDetail}
           onAskAIAboutZodiac={handleAskAIAboutZodiac}
-          onClose={() => setHoroscopeModalOpen(false)}
+          onClose={handleCloseHoroscope}
         />
       )}
 
