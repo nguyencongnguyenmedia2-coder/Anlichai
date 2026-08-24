@@ -102,6 +102,7 @@ export const App: React.FC = () => {
       searchParams.set('date', `${year}-${month}-${day}`);
     } else {
       searchParams.delete('date');
+      searchParams.delete('slug');
     }
 
     const newQuery = searchParams.toString() ? `?${searchParams.toString()}` : '';
