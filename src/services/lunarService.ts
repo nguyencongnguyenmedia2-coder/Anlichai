@@ -406,5 +406,182 @@ export const lunarService = {
 
     // Fallback if event date has not been matched
     return { nextDate: today, daysRemaining: 999 };
+  },
+
+  // Calculate Bat Trach Feng Shui for House & Desk Orientations
+  getBatTrachPhongThuy(birthYear: number, gender: 'nam' | 'nu'): BatTrachResult {
+    // Calculate Cung Menh index (1 to 9) according to Year and Gender
+    let remainder = birthYear % 9;
+    if (remainder === 0) remainder = 9;
+
+    let cungNum = 0;
+    if (gender === 'nam') {
+      cungNum = (11 - remainder) % 9;
+      if (cungNum === 0) cungNum = 9;
+    } else {
+      cungNum = (remainder + 4) % 9;
+      if (cungNum === 0) cungNum = 9;
+    }
+
+    // Map 5 in Male/Female to Khôn (Nam) and Cấn (Nữ)
+    if (cungNum === 5) {
+      cungNum = gender === 'nam' ? 2 : 8; // Khôn / Cấn
+    }
+
+    const CUNG_NAMES: Record<number, { name: string; element: string; group: string }> = {
+      1: { name: 'Khảm', element: 'Thủy', group: 'Đông Tứ Mệnh' },
+      2: { name: 'Khôn', element: 'Thổ', group: 'Tây Tứ Mệnh' },
+      3: { name: 'Chấn', element: 'Mộc', group: 'Đông Tứ Mệnh' },
+      4: { name: 'Tốn', element: 'Mộc', group: 'Đông Tứ Mệnh' },
+      6: { name: 'Càn', element: 'Kim', group: 'Tây Tứ Mệnh' },
+      7: { name: 'Đoài', element: 'Kim', group: 'Tây Tứ Mệnh' },
+      8: { name: 'Cấn', element: 'Thổ', group: 'Tây Tứ Mệnh' },
+      9: { name: 'Ly', element: 'Hỏa', group: 'Đông Tứ Mệnh' },
+    };
+
+    const cungInfo = CUNG_NAMES[cungNum] || CUNG_NAMES[1];
+
+    // Directions mappings for 8 Cung
+    const DIRECTIONS_BY_CUNG: Record<number, { good: Array<{ name: string; dir: string; meaning: string }>; bad: Array<{ name: string; dir: string; meaning: string }> }> = {
+      1: { // Khảm
+        good: [
+          { name: 'Sinh Khí', dir: 'Đông Nam', meaning: 'Cát tường nhất, kích tài lộc vượng tiến, thăng tiến công danh sự nghiệp.' },
+          { name: 'Thiên Y', dir: 'Đông', meaning: 'Gia đạo an lành, sức khỏe dồi dào, có bệnh mau khỏi.' },
+          { name: 'Diên Niên', dir: 'Nam', meaning: 'Gia đình hòa thuận, tình duyên bền chặt, các mối quan hệ êm đẹp.' },
+          { name: 'Phục Vị', dir: 'Bắc', meaning: 'Tinh thần kiên định, thi cử đỗ đạt, may mắn trong học tập & công việc.' }
+        ],
+        bad: [
+          { name: 'Họa Hại', dir: 'Tây Bắc', meaning: 'Không may mắn, thị phi lời nói, làm việc dễ đố kỵ.' },
+          { name: 'Lục Sát', dir: 'Tây', meaning: 'Trục trặc tình cảm, tai tiếng, tranh chấp gia đạo.' },
+          { name: 'Ngũ Quỷ', dir: 'Đông Bắc', meaning: 'Mất mát tài chính, thu nhập bấp bấp, công việc trắc trở.' },
+          { name: 'Tuyệt Mệnh', dir: 'Tây Nam', meaning: 'Xấu nhất, tổn hại sức khỏe, tinh thần sút giảm nặng.' }
+        ]
+      },
+      2: { // Khôn
+        good: [
+          { name: 'Sinh Khí', dir: 'Đông Bắc', meaning: 'Phát tài phát lộc, danh tiếng lẫy lừng, công danh thăng tiến.' },
+          { name: 'Thiên Y', dir: 'Tây', meaning: 'Sức khỏe tốt, trường thọ, gặp quý nhân phù trợ.' },
+          { name: 'Diên Niên', dir: 'Tây Bắc', meaning: 'Vợ chồng hòa hợp, con cái ngoan hiền, gia đạo vượng phát.' },
+          { name: 'Phục Vị', dir: 'Tây Nam', meaning: 'Vững vàng tinh thần, thi cử tiến bộ, gia đạo bình yên.' }
+        ],
+        bad: [
+          { name: 'Họa Hại', dir: 'Đông', meaning: 'Thị phi, xui xẻo, công việc chậm tiến độ.' },
+          { name: 'Lục Sát', dir: 'Nam', meaning: 'Tranh chấp, tổn hao tinh thần, mất mát uy tín.' },
+          { name: 'Ngũ Quỷ', dir: 'Đông Nam', meaning: 'Hao tốn tiền bạc, mất trộm, thu nhập sụt giảm.' },
+          { name: 'Tuyệt Mệnh', dir: 'Bắc', meaning: 'Hung khí mạnh, bệnh tật triền miên, trắc trở lớn.' }
+        ]
+      },
+      3: { // Chấn
+        good: [
+          { name: 'Sinh Khí', dir: 'Nam', meaning: 'Thu hút tài lộc, thăng quan tiến chức, buôn bán phát tài.' },
+          { name: 'Thiên Y', dir: 'Bắc', meaning: 'Sức khỏe tráng kiện, xua tan bệnh tật, gia đạo bình an.' },
+          { name: 'Diên Niên', dir: 'Đông Nam', meaning: 'Tình cảm thắm thiết, bạn bè yêu mến, quan hệ rộng mở.' },
+          { name: 'Phục Vị', dir: 'Đông', meaning: 'Củng cố sức mạnh tinh thần, thi cử đỗ đạt, công việc tiến tới.' }
+        ],
+        bad: [
+          { name: 'Họa Hại', dir: 'Tây Nam', meaning: 'Thất bại nhỏ, lời qua tiếng lại, mất thiện cảm.' },
+          { name: 'Lục Sát', dir: 'Tây Bắc', meaning: 'Mất mát tình cảm, mang tai tiếng thị phi.' },
+          { name: 'Ngũ Quỷ', dir: 'Tây', meaning: 'Mất việc làm, hao tài tốn của, dễ mâu thuẫn.' },
+          { name: 'Tuyệt Mệnh', dir: 'Đông Bắc', meaning: 'Xấu nặng, nguy cơ sức khỏe sút giảm, gia đạo bất hòa.' }
+        ]
+      },
+      4: { // Tốn
+        good: [
+          { name: 'Sinh Khí', dir: 'Bắc', meaning: 'Tài lộc dồi dào, danh tiếng vang xa, công việc thuận lợi.' },
+          { name: 'Thiên Y', dir: 'Nam', meaning: 'Sức khỏe ổn định, sống thọ, được quý nhân nâng đỡ.' },
+          { name: 'Diên Niên', dir: 'Đông', meaning: 'Gia đình gắn kết, vợ chồng hòa thuận, cuộc sống viên mãn.' },
+          { name: 'Phục Vị', dir: 'Đông Nam', meaning: 'Thi cử may mắn, tinh thần thông suốt, công việc bền vững.' }
+        ],
+        bad: [
+          { name: 'Họa Hại', dir: 'Tây Bắc', meaning: 'Mệt mỏi, công việc không như ý, mâu thuẫn lời nói.' },
+          { name: 'Lục Sát', dir: 'Tây', meaning: 'Tai tiếng, xáo trộn tình cảm, giảm uy tín.' },
+          { name: 'Ngũ Quỷ', dir: 'Tây Nam', meaning: 'Hao tổn tài chính, thất thoát của cải.' },
+          { name: 'Tuyệt Mệnh', dir: 'Đông Bắc', meaning: 'Đại kỵ, tổn hại sinh khí, trắc trở nhiều bề.' }
+        ]
+      },
+      6: { // Càn
+        good: [
+          { name: 'Sinh Khí', dir: 'Tây', meaning: 'Vượng khí dồi dào, thăng tiến sự nghiệp, lộc tài đầy nhà.' },
+          { name: 'Thiên Y', dir: 'Đông Bắc', meaning: 'Sức khỏe dồi dào, tai qua nạn khỏi, tinh thần minh mẫn.' },
+          { name: 'Diên Niên', dir: 'Tây Nam', meaning: 'Nhân duyên tốt đẹp, gia đạo an vui, sự nghiệp hanh thông.' },
+          { name: 'Phục Vị', dir: 'Tây Bắc', meaning: 'Gia tăng may mắn, tinh thần vững vàng, nâng cao năng lực.' }
+        ],
+        bad: [
+          { name: 'Họa Hại', dir: 'Đông Nam', meaning: 'Không may mắn, vướng thị phi, công việc trở ngại.' },
+          { name: 'Lục Sát', dir: 'Bắc', meaning: 'Mất mát tình cảm, mâu thuẫn người thân, tai tiếng.' },
+          { name: 'Ngũ Quỷ', dir: 'Đông', meaning: 'Tài chính giảm sút, mất nguồn thu nhập, mâu thuẫn.' },
+          { name: 'Tuyệt Mệnh', dir: 'Nam', meaning: 'Hung khí cao, sức khỏe giảm sút nặng, nên kỵ hướng này.' }
+        ]
+      },
+      7: { // Đoài
+        good: [
+          { name: 'Sinh Khí', dir: 'Tây Bắc', meaning: 'Thăng quan tiến chức, tài lộc vượng phát, kinh doanh đại lộc.' },
+          { name: 'Thiên Y', dir: 'Tây Nam', meaning: 'Trường thọ, khỏe mạnh, có quý nhân phù hộ.' },
+          { name: 'Diên Niên', dir: 'Đông Bắc', meaning: 'Tình cảm êm đẹp, mối quan hệ xã hội mở rộng, gia đạo êm ấm.' },
+          { name: 'Phục Vị', dir: 'Tây', meaning: 'Tự tin, kiên định, học hành thi cử gặp nhiều thuận lợi.' }
+        ],
+        bad: [
+          { name: 'Họa Hại', dir: 'Bắc', meaning: 'Xui xẻo nhỏ, hiểu nhầm không đáng có.' },
+          { name: 'Lục Sát', dir: 'Đông Nam', meaning: 'Trục trặc quan hệ, mang tiếng xấu, hao tổn nỗ lực.' },
+          { name: 'Ngũ Quỷ', dir: 'Nam', meaning: 'Thất thoát của cải, thu nhập bấp bấp.' },
+          { name: 'Tuyệt Mệnh', dir: 'Đông', meaning: 'Đại hung, ảnh hưởng lớn đến sức khỏe & tài vận.' }
+        ]
+      },
+      8: { // Cấn
+        good: [
+          { name: 'Sinh Khí', dir: 'Tây Nam', meaning: 'Tài lộc dồi dào, thăng tiến nhanh chóng, công danh rực rỡ.' },
+          { name: 'Thiên Y', dir: 'Tây Bắc', meaning: 'Thân thể khỏe mạnh, tinh thần sảng khoái, gặp được thầy giỏi thuốc hay.' },
+          { name: 'Diên Niên', dir: 'Tây', meaning: 'Gia đình đoàn kết, hòa thuận, con cái thành đạt.' },
+          { name: 'Phục Vị', dir: 'Đông Bắc', meaning: 'Củng cố tinh thần, học tập thi cử tiến bộ, công việc vững vàng.' }
+        ],
+        bad: [
+          { name: 'Họa Hại', dir: 'Nam', meaning: 'Vướng tranh cãi nhỏ, công việc tiến triển chậm.' },
+          { name: 'Lục Sát', dir: 'Đông', meaning: 'Xung đột tình cảm, tai tiếng thị phi.' },
+          { name: 'Ngũ Quỷ', dir: 'Bắc', meaning: 'Dễ hao tài, công việc không ổn định.' },
+          { name: 'Tuyệt Mệnh', dir: 'Đông Nam', meaning: 'Rất xấu, trắc trở sức khỏe, nên cẩn trọng.' }
+        ]
+      },
+      9: { // Ly
+        good: [
+          { name: 'Sinh Khí', dir: 'Đông', meaning: 'Vinh hoa phú quý, công danh rộng mở, tài lộc hanh thông.' },
+          { name: 'Thiên Y', dir: 'Đông Nam', meaning: 'Sức khỏe dồi dào, bình an, gặp may mắn trong cuộc sống.' },
+          { name: 'Diên Niên', dir: 'Bắc', meaning: 'Hòa hợp gia đạo, kết giao bạn tốt, tình duyên nồng thắm.' },
+          { name: 'Phục Vị', dir: 'Nam', meaning: 'Tăng cường sức mạnh bản thân, thi cử phát đạt.' }
+        ],
+        bad: [
+          { name: 'Họa Hại', dir: 'Đông Bắc', meaning: 'Thị phi, mâu thuẫn nhỏ, kém may mắn.' },
+          { name: 'Lục Sát', dir: 'Tây Nam', meaning: 'Tổn hại tình cảm, mang tiếng tai tiếng.' },
+          { name: 'Ngũ Quỷ', dir: 'Tây Bắc', meaning: 'Thất thoát tiền bạc, trục trặc sự nghiệp.' },
+          { name: 'Tuyệt Mệnh', dir: 'Tây', meaning: 'Hung tinh mạnh, sức khỏe sút giảm, kỵ chọn hướng này.' }
+        ]
+      }
+    };
+
+    const dirConfig = DIRECTIONS_BY_CUNG[cungNum] || DIRECTIONS_BY_CUNG[1];
+    const canChiYears = ['Giáp Tý', 'Ất Sửu', 'Bính Dần', 'Đinh Mão', 'Mậu Thìn', 'Kỷ Tỵ', 'Canh Ngọ', 'Tân Mùi', 'Nhâm Thân', 'Quý Dậu', 'Giáp Tuất', 'Ất Hợi'];
+    const lunarYearCanChi = canChiYears[Math.abs(birthYear - 1984) % 12] || 'Canh Tý';
+
+    return {
+      birthYear,
+      gender,
+      lunarYearCanChi,
+      cungMenh: cungInfo.name,
+      menhNguHanh: cungInfo.group,
+      element: cungInfo.element,
+      goodDirections: dirConfig.good.map(g => ({
+        name: g.name,
+        type: 'good',
+        direction: g.dir,
+        element: cungInfo.element,
+        meaning: g.meaning
+      })),
+      badDirections: dirConfig.bad.map(b => ({
+        name: b.name,
+        type: 'bad',
+        direction: b.dir,
+        element: cungInfo.element,
+        meaning: b.meaning
+      }))
+    };
   }
 };

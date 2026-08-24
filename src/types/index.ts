@@ -140,6 +140,25 @@ export interface BlogSection {
   callout?: string;
 }
 
+export interface BatTrachDirection {
+  name: string; // e.g. "Sinh Khí", "Thiên Y", "Họa Hại"...
+  type: 'good' | 'bad';
+  direction: string; // e.g. "Đông", "Nam"...
+  element: string;
+  meaning: string;
+}
+
+export interface BatTrachResult {
+  birthYear: number;
+  gender: 'nam' | 'nu';
+  lunarYearCanChi: string;
+  cungMenh: string; // e.g. "Càn", "Khảm", "Cấn"...
+  menhNguHanh: string; // e.g. "Tây Tứ Mệnh" / "Đông Tứ Mệnh"
+  element: string; // e.g. "Kim", "Thủy"...
+  goodDirections: BatTrachDirection[];
+  badDirections: BatTrachDirection[];
+}
+
 export interface BlogPost {
   id: string;
   slug: string;

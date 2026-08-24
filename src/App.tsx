@@ -17,6 +17,7 @@ import { lunarService } from './services/lunarService';
 import { notificationService } from './services/notificationService';
 
 import { BlogView } from './components/BlogView';
+import { BatTrachView } from './components/BatTrachView';
 
 export const App: React.FC = () => {
   // Tab to Slug mappings
@@ -25,15 +26,17 @@ export const App: React.FC = () => {
     personal: 'lich-ca-nhan',
     events: 'le-hoi-su-kien',
     blog: 'goc-phong-thuy',
+    battrach: 'bat-trach',
     ai: 'tro-ly-ai',
     settings: 'cai-dat'
   };
 
-  const SLUG_TO_TAB: Record<string, 'calendar' | 'events' | 'personal' | 'blog' | 'ai' | 'settings'> = {
+  const SLUG_TO_TAB: Record<string, 'calendar' | 'events' | 'personal' | 'blog' | 'battrach' | 'ai' | 'settings'> = {
     'lich-thang': 'calendar',
     'lich-ca-nhan': 'personal',
     'le-hoi-su-kien': 'events',
     'goc-phong-thuy': 'blog',
+    'bat-trach': 'battrach',
     'tro-ly-ai': 'ai',
     'cai-dat': 'settings',
     'tu-vi': 'calendar' // 'tu-vi' opens horoscope modal on calendar tab
@@ -397,6 +400,11 @@ export const App: React.FC = () => {
         {/* TAB 4: BLOG SEO ARTICLES VIEW */}
         {activeTab === 'blog' && (
           <BlogView />
+        )}
+
+        {/* TAB 5: BAT TRACH FENG SHUI VIEW */}
+        {activeTab === 'battrach' && (
+          <BatTrachView />
         )}
 
         {/* TAB 4: GEMINI AI CHATBOT ASSISTANT */}
