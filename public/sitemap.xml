@@ -36,28 +36,4 @@
     <changefreq>daily</changefreq>
     <priority>0.8</priority>
   </url>
-  <url>
-    <loc>https://www.anlichai.online/goc-phong-thuy?slug=cach-xem-ngay-tot-xau-lich-am-duong</loc>
-    <lastmod>2026-08-24</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://www.anlichai.online/goc-phong-thuy?slug=huong-dan-van-khan-mung-1-va-ram-hang-thang</loc>
-    <lastmod>2026-08-24</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://www.anlichai.online/goc-phong-thuy?slug=tu-vi-12-con-giap-va-cach-hoa-giai-sao-han</loc>
-    <lastmod>2026-08-24</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://www.anlichai.online/goc-phong-thuy?slug=an-lich-ai-nen-tang-xem-lich-am-duong-phong-thuy-hang-dau</loc>
-    <lastmod>2026-08-24</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.9</priority>
-  </url>
 </urlset>
