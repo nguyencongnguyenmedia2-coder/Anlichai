@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Analytics } from '@vercel/analytics/react';
 import { Header } from './components/Header';
 import { CalendarGrid } from './components/CalendarGrid';
 import { DayDetailPanel } from './components/DayDetailPanel';
@@ -475,6 +476,9 @@ export const App: React.FC = () => {
           Thiết kế & Phát triển: <span className="font-bold">Nguyễn Công Nguyên</span> • SĐT/Zalo: <a href="tel:0934811307" className="underline hover:text-oriental-gold-500">0934811307</a>
         </p>
       </footer>
+
+      {/* Vercel Web Analytics */}
+      <Analytics />
 
     </div>
   );
