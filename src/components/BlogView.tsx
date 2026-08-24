@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Search, Clock, User, Tag, ArrowLeft, Share2 } from 'lucide-react';
 import { BLOG_POSTS } from '../data/blogPosts';
 import { BlogPost } from '../types';
@@ -8,9 +8,49 @@ interface BlogViewProps {
 }
 
 export const BlogView: React.FC<BlogViewProps> = () => {
-  const [selectedPost, setSelectedPost] = useState<BlogPost | null>(null);
+  // Parse slug from URL query
+  const getSlugFromUrl = () => {
+    const searchParams = new URLSearchParams(window.location.search);
+    return searchParams.get('slug');
+  };
+
+  const initialSlug = getSlugFromUrl();
+  const initialPost = BLOG_POSTS.find((p) => p.slug === initialSlug) || null;
+
+  const [selectedPost, setSelectedPostState] = useState<BlogPost | null>(initialPost);
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
+
+  const setSelectedPost = (post: BlogPost | null) => {
+    setSelectedPostState(post);
+    const searchParams = new URLSearchParams(window.location.search);
+    if (post) {
+      searchParams.set('slug', post.slug);
+      document.title = `${post.title} | An Lịch AI`;
+    } else {
+      searchParams.delete('slug');
+      document.title = 'Góc Phong Thủy & Cẩm Nang Xem Ngày Tốt Âm Dương | An Lịch AI';
+    }
+    const newQuery = searchParams.toString() ? `?${searchParams.toString()}` : '';
+    const newUrl = `${window.location.pathname}${newQuery}`;
+    window.history.pushState({ slug: post?.slug }, '', newUrl);
+  };
+
+  // Sync state if browser Back / Forward is clicked
+  useEffect(() => {
+    const handlePopState = () => {
+      const slug = getSlugFromUrl();
+      const post = BLOG_POSTS.find((p) => p.slug === slug) || null;
+      setSelectedPostState(post);
+      if (post) {
+        document.title = `${post.title} | An Lịch AI`;
+      } else {
+        document.title = 'Góc Phong Thủy & Cẩm Nang Xem Ngày Tốt Âm Dương | An Lịch AI';
+      }
+    };
+    window.addEventListener('popstate', handlePopState);
+    return () => window.removeEventListener('popstate', handlePopState);
+  }, []);
 
   const filteredPosts = BLOG_POSTS.filter((post) => {
     const matchesSearch =
