@@ -1,5 +1,5 @@
 import { Solar } from 'lunar-javascript';
-import { DayDetail, HoangDaoHour, ZodiacHoroscope } from '../types';
+import { DayDetail, HoangDaoHour, ZodiacHoroscope, BatTrachResult } from '../types';
 import { storageService } from './storageService';
 
 // Chinese to Vietnamese Translation Dictionary

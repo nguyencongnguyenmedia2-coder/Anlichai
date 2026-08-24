@@ -4,8 +4,8 @@ import { AppSettings } from '../types';
 import logoImg from '../assets/logo.png';
 
 interface HeaderProps {
-  activeTab: 'calendar' | 'events' | 'personal' | 'blog' | 'ai' | 'settings';
-  setActiveTab: (tab: 'calendar' | 'events' | 'personal' | 'blog' | 'ai' | 'settings') => void;
+  activeTab: 'calendar' | 'events' | 'personal' | 'blog' | 'battrach' | 'ai' | 'settings';
+  setActiveTab: (tab: 'calendar' | 'events' | 'personal' | 'blog' | 'battrach' | 'ai' | 'settings') => void;
   settings: AppSettings;
   onUpdateSettings: (newSettings: AppSettings) => void;
   onJumpToToday: () => void;

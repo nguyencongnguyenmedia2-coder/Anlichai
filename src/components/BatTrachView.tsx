@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Compass, CheckCircle2, XCircle, Sparkles, User, Info, Share2 } from 'lucide-react';
+import { Compass, CheckCircle2, XCircle, User, Info, Share2 } from 'lucide-react';
 import { lunarService } from '../services/lunarService';
 import { BatTrachResult } from '../types';
 

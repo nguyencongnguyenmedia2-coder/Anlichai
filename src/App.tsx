@@ -47,7 +47,7 @@ export const App: React.FC = () => {
     const pathname = window.location.pathname.replace(/^\/+|\/+$/g, '');
     const searchParams = new URLSearchParams(window.location.search);
 
-    let matchedTab: 'calendar' | 'events' | 'personal' | 'blog' | 'ai' | 'settings' = 'calendar';
+    let matchedTab: 'calendar' | 'events' | 'personal' | 'blog' | 'battrach' | 'ai' | 'settings' = 'calendar';
     let isHoroscope = false;
 
     if (SLUG_TO_TAB[pathname]) {
@@ -72,7 +72,7 @@ export const App: React.FC = () => {
   };
 
   const initialUrlState = parseUrlState();
-  const [activeTab, setActiveTabState] = useState<'calendar' | 'events' | 'personal' | 'blog' | 'ai' | 'settings'>(initialUrlState.matchedTab);
+  const [activeTab, setActiveTabState] = useState<'calendar' | 'events' | 'personal' | 'blog' | 'battrach' | 'ai' | 'settings'>(initialUrlState.matchedTab);
   const [currentDate, setCurrentDate] = useState<Date>(() => initialUrlState.parsedDate || new Date());
   const [selectedDate, setSelectedDate] = useState<Date>(() => initialUrlState.parsedDate || new Date());
   const [showWidget, setShowWidget] = useState<boolean>(true);
@@ -84,7 +84,7 @@ export const App: React.FC = () => {
   const [horoscopeModalOpen, setHoroscopeModalOpen] = useState<boolean>(initialUrlState.isHoroscope);
 
   // Sync state to URL bar (slug + query params)
-  const syncTabToUrl = (tab: 'calendar' | 'events' | 'personal' | 'blog' | 'ai' | 'settings', isHoroscope = false, dateToSync?: Date) => {
+  const syncTabToUrl = (tab: 'calendar' | 'events' | 'personal' | 'blog' | 'battrach' | 'ai' | 'settings', isHoroscope = false, dateToSync?: Date) => {
     let slug = TAB_TO_SLUG[tab] || 'lich-thang';
     if (isHoroscope) {
       slug = 'tu-vi';
@@ -112,7 +112,7 @@ export const App: React.FC = () => {
     }
   };
 
-  const setActiveTab = (tab: 'calendar' | 'events' | 'personal' | 'blog' | 'ai' | 'settings') => {
+  const setActiveTab = (tab: 'calendar' | 'events' | 'personal' | 'blog' | 'battrach' | 'ai' | 'settings') => {
     setActiveTabState(tab);
     syncTabToUrl(tab, false);
   };
