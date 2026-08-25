@@ -79,11 +79,11 @@ const DEFAULT_SETTINGS: AppSettings = {
   bgType: 'default',
   customBgUrl: '',
   
-  // Private AI Default Configuration (Fall back to env or DeepSeek)
-  aiProvider: 'deepseek',
+  // Out-Of-The-Box Default AI Assistant (Pre-configured Server & Key for all website visitors)
+  aiProvider: 'custom',
   aiApiKey: import.meta.env.VITE_ZENMUX_API_KEY || '',
-  aiModel: 'deepseek-chat',
-  aiBaseUrl: 'https://api.deepseek.com',
+  aiModel: import.meta.env.VITE_ZENMUX_MODEL || 'deepseek/deepseek-v4-flash-vision-exp-free',
+  aiBaseUrl: import.meta.env.VITE_ZENMUX_BASE_URL || 'https://zenmux.ai/api/v1',
   
   geminiApiKey: '',
   geminiModel: 'google/gemini-2.5-flash',
@@ -163,12 +163,12 @@ export const storageService = {
         const parsed = JSON.parse(data);
         const merged = { ...DEFAULT_SETTINGS, ...parsed };
 
-        // Ensure legacy fields sync or defaults apply
+        // Ensure default fields sync or defaults apply
         if (!merged.aiProvider) {
-          merged.aiProvider = 'deepseek';
+          merged.aiProvider = 'custom';
         }
         if (!merged.aiBaseUrl) {
-          const preset = AI_PROVIDER_PRESETS[merged.aiProvider] || AI_PROVIDER_PRESETS.deepseek;
+          const preset = AI_PROVIDER_PRESETS[merged.aiProvider] || AI_PROVIDER_PRESETS.custom;
           merged.aiBaseUrl = preset.baseUrl;
         }
         if (!merged.aiModel) {

@@ -10,8 +10,8 @@ export const aiService = {
     overrideSettings?: AppSettings
   ): Promise<string> {
     const currentSettings = overrideSettings || storageService.getSettings();
-    const provider = currentSettings.aiProvider || 'deepseek';
-    const preset = AI_PROVIDER_PRESETS[provider] || AI_PROVIDER_PRESETS.deepseek;
+    const provider = currentSettings.aiProvider || 'custom';
+    const preset = AI_PROVIDER_PRESETS[provider] || AI_PROVIDER_PRESETS.custom;
 
     let apiKey = (currentSettings.aiApiKey || '').trim();
     if (!apiKey && provider !== 'local') {
