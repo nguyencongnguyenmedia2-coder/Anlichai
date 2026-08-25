@@ -12,14 +12,15 @@ import { DayDetailPanel } from './components/DayDetailPanel';
 // Code-split heavy components to improve initial PageSpeed (FCP/LCP)
 const EventsView = lazy(() => import('./components/EventsView').then(m => ({ default: m.EventsView })));
 const PersonalCalendarView = lazy(() => import('./components/PersonalCalendarView').then(m => ({ default: m.PersonalCalendarView })));
-const AIChatView = lazy(() => import('./components/AIChatView').then(m => ({ default: m.AIChatView })));
+import { updatePageSEO } from './services/seoService';
+
 const SettingsView = lazy(() => import('./components/SettingsView').then(m => ({ default: m.SettingsView })));
 const AdminLoginModal = lazy(() => import('./components/AdminLoginModal').then(m => ({ default: m.AdminLoginModal })));
 const HoroscopeModal = lazy(() => import('./components/HoroscopeModal').then(m => ({ default: m.HoroscopeModal })));
 const SEOContent = lazy(() => import('./components/SEOContent').then(m => ({ default: m.SEOContent })));
-const DesktopWidget = lazy(() => import('./components/DesktopWidget').then(m => ({ default: m.DesktopWidget })));
 const BlogView = lazy(() => import('./components/BlogView').then(m => ({ default: m.BlogView })));
-const BatTrachView = lazy(() => import('./components/BatTrachView').then(m => ({ default: m.BatTrachView })));
+const BatTrachAstrologyView = lazy(() => import('./components/BatTrachAstrologyView').then(m => ({ default: m.BatTrachAstrologyView })));
+const AIChatFloatingWidget = lazy(() => import('./components/AIChatFloatingWidget').then(m => ({ default: m.AIChatFloatingWidget })));
 
 export const App: React.FC = () => {
   // Tab to Slug mappings
@@ -27,19 +28,22 @@ export const App: React.FC = () => {
     calendar: 'lich-thang',
     personal: 'lich-ca-nhan',
     events: 'le-hoi-su-kien',
-    blog: 'goc-phong-thuy',
+    blog: 'bai-viet',
     battrach: 'bat-trach',
-    ai: 'tro-ly-ai',
+    astrology: 'chiem-tinh',
     settings: 'cai-dat'
   };
 
-  const SLUG_TO_TAB: Record<string, 'calendar' | 'events' | 'personal' | 'blog' | 'battrach' | 'ai' | 'settings'> = {
+  const SLUG_TO_TAB: Record<string, 'calendar' | 'events' | 'personal' | 'blog' | 'battrach' | 'astrology' | 'ai' | 'settings'> = {
     'lich-thang': 'calendar',
     'lich-ca-nhan': 'personal',
     'le-hoi-su-kien': 'events',
+    'bai-viet': 'blog',
     'goc-phong-thuy': 'blog',
     'bat-trach': 'battrach',
-    'tro-ly-ai': 'ai',
+    'chiem-tinh': 'astrology',
+    'hop-tuoi-tinh-duyen': 'astrology',
+    'tro-ly-ai': 'calendar', // Redirect legacy AI slug to calendar with floating widget open
     'cai-dat': 'settings',
     'tu-vi': 'calendar' // 'tu-vi' opens horoscope modal on calendar tab
   };
@@ -49,8 +53,13 @@ export const App: React.FC = () => {
     const pathname = window.location.pathname.replace(/^\/+|\/+$/g, '');
     const searchParams = new URLSearchParams(window.location.search);
 
-    let matchedTab: 'calendar' | 'events' | 'personal' | 'blog' | 'battrach' | 'ai' | 'settings' = 'calendar';
+    let matchedTab: 'calendar' | 'events' | 'personal' | 'blog' | 'battrach' | 'astrology' | 'ai' | 'settings' = 'calendar';
     let isHoroscope = false;
+    let isAiChat = false;
+
+    if (pathname === 'tro-ly-ai') {
+      isAiChat = true;
+    }
 
     if (SLUG_TO_TAB[pathname]) {
       matchedTab = SLUG_TO_TAB[pathname];
@@ -70,14 +79,14 @@ export const App: React.FC = () => {
       }
     }
 
-    return { matchedTab, isHoroscope, parsedDate };
+    return { matchedTab, isHoroscope, isAiChat, parsedDate };
   };
 
   const initialUrlState = parseUrlState();
-  const [activeTab, setActiveTabState] = useState<'calendar' | 'events' | 'personal' | 'blog' | 'battrach' | 'ai' | 'settings'>(initialUrlState.matchedTab);
+  const [activeTab, setActiveTabState] = useState<'calendar' | 'events' | 'personal' | 'blog' | 'battrach' | 'astrology' | 'ai' | 'settings'>(initialUrlState.matchedTab);
+  const [isAIChatOpen, setIsAIChatOpen] = useState<boolean>(initialUrlState.isAiChat);
   const [currentDate, setCurrentDate] = useState<Date>(() => initialUrlState.parsedDate || new Date());
   const [selectedDate, setSelectedDate] = useState<Date>(() => initialUrlState.parsedDate || new Date());
-  const [showWidget, setShowWidget] = useState<boolean>(true);
   const [settings, setSettings] = useState<AppSettings>(() => storageService.getSettings());
   const [selectedDayContext, setSelectedDayContext] = useState<DayDetail | null>(null);
   const [mobileDetailOpen, setMobileDetailOpen] = useState<boolean>(false);
@@ -86,7 +95,7 @@ export const App: React.FC = () => {
   const [horoscopeModalOpen, setHoroscopeModalOpen] = useState<boolean>(initialUrlState.isHoroscope);
 
   // Sync state to URL bar (slug + query params)
-  const syncTabToUrl = (tab: 'calendar' | 'events' | 'personal' | 'blog' | 'battrach' | 'ai' | 'settings', isHoroscope = false, dateToSync?: Date) => {
+  const syncTabToUrl = (tab: 'calendar' | 'events' | 'personal' | 'blog' | 'battrach' | 'astrology' | 'ai' | 'settings', isHoroscope = false, dateToSync?: Date) => {
     let slug = TAB_TO_SLUG[tab] || 'lich-thang';
     if (isHoroscope) {
       slug = 'tu-vi';
@@ -115,7 +124,7 @@ export const App: React.FC = () => {
     }
   };
 
-  const setActiveTab = (tab: 'calendar' | 'events' | 'personal' | 'blog' | 'battrach' | 'ai' | 'settings') => {
+  const setActiveTab = (tab: 'calendar' | 'events' | 'personal' | 'blog' | 'battrach' | 'astrology' | 'ai' | 'settings') => {
     setActiveTabState(tab);
     syncTabToUrl(tab, false);
   };
@@ -136,17 +145,11 @@ export const App: React.FC = () => {
     return () => window.removeEventListener('popstate', handlePopState);
   }, []);
 
-  const events = storageService.getEvents();
-  const personalEvents = storageService.getPersonalEvents();
-
-  // Electron IPC Event Listeners (System Tray & Desktop Widget)
+  // Electron IPC Event Listeners (System Tray)
   useEffect(() => {
     if (window.electronAPI) {
       window.electronAPI.onNavigateTab((tab: any) => {
         if (tab) setActiveTab(tab);
-      });
-      window.electronAPI.onToggleWidget(() => {
-        setShowWidget((prev) => !prev);
       });
     }
   }, []);
@@ -159,6 +162,15 @@ export const App: React.FC = () => {
       document.documentElement.classList.remove('dark');
     }
   }, [settings.theme]);
+
+  // Dynamically update Page Title, Meta Description, OG Tags & Canonical URL per Page
+  useEffect(() => {
+    if (horoscopeModalOpen) {
+      updatePageSEO('horoscope');
+    } else {
+      updatePageSEO(activeTab);
+    }
+  }, [activeTab, horoscopeModalOpen]);
 
   // Request notifications & check events on app launch
   useEffect(() => {
@@ -285,13 +297,13 @@ export const App: React.FC = () => {
   const handleAskAIAboutDate = (dayDetail: DayDetail) => {
     setSelectedDayContext(dayDetail);
     setMobileDetailOpen(false);
-    setActiveTab('ai');
+    setIsAIChatOpen(true);
   };
 
   const handleAskAIAboutZodiac = (_zodiacName: string) => {
     setHoroscopeModalOpen(false);
     setSelectedDayContext(currentSelectedDayDetail);
-    setActiveTab('ai');
+    setIsAIChatOpen(true);
   };
 
   const currentSelectedDayDetail = lunarService.getDayDetail(selectedDate);
@@ -410,18 +422,11 @@ export const App: React.FC = () => {
             <BlogView />
           )}
 
-          {/* TAB 5: BAT TRACH FENG SHUI VIEW */}
-          {activeTab === 'battrach' && (
-            <BatTrachView />
-          )}
-
-          {/* TAB 4: GEMINI AI CHATBOT ASSISTANT */}
-          {activeTab === 'ai' && (
-            <AIChatView
-              settings={settings}
-              onOpenSettings={() => setActiveTab('settings')}
-              selectedDayContext={selectedDayContext}
-              onClearContext={() => setSelectedDayContext(null)}
+          {/* TAB 5: UNIFIED CHIÊM TINH & BÁT TRẠCH VIEW */}
+          {(activeTab === 'astrology' || activeTab === 'battrach') && (
+            <BatTrachAstrologyView 
+              settings={settings} 
+              initialSubTab={activeTab === 'battrach' ? 'battrach' : 'astrology'} 
             />
           )}
 
@@ -443,6 +448,20 @@ export const App: React.FC = () => {
       </main>
 
       <Suspense fallback={null}>
+        {/* Floating AI Chatbot Icon Widget */}
+        <AIChatFloatingWidget
+          isOpen={isAIChatOpen}
+          onToggle={() => setIsAIChatOpen((prev) => !prev)}
+          onClose={() => setIsAIChatOpen(false)}
+          settings={settings}
+          onOpenSettings={() => {
+            setIsAIChatOpen(false);
+            setActiveTab('settings');
+          }}
+          selectedDayContext={selectedDayContext}
+          onClearContext={() => setSelectedDayContext(null)}
+        />
+
         {/* Daily Zodiac Horoscope Modal */}
         {horoscopeModalOpen && (
           <HoroscopeModal
@@ -461,19 +480,6 @@ export const App: React.FC = () => {
               setAdminModalOpen(false);
             }}
             onClose={() => setAdminModalOpen(false)}
-          />
-        )}
-
-        {/* Floating Desktop Widget View */}
-        {showWidget && (
-          <DesktopWidget
-            dayDetail={currentSelectedDayDetail}
-            events={events}
-            personalEvents={personalEvents}
-            onOpenMainApp={(tab) => {
-              if (tab) setActiveTab(tab);
-            }}
-            onCloseWidget={() => setShowWidget(false)}
           />
         )}
       </Suspense>

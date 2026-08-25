@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { X, Sparkles, Clock, ShieldCheck, Minimize2, ExternalLink, Bot } from 'lucide-react';
+import { X, Sparkles, Clock, ShieldCheck, Minimize2, ExternalLink, Bot, ArrowLeftRight } from 'lucide-react';
 import { DayDetail, EventItem, PersonalEvent } from '../types';
 import logoImg from '../assets/logo.png';
 
@@ -19,6 +19,7 @@ export const DesktopWidget: React.FC<DesktopWidgetProps> = ({
   onCloseWidget,
 }) => {
   const [isMinimized, setIsMinimized] = useState(false);
+  const [widgetPosition, setWidgetPosition] = useState<'left' | 'right'>('left');
 
   // Weekday Name
   const weekdaysFull = ['Chủ Nhật', 'Thứ Hai', 'Thứ Ba', 'Thứ Tư', 'Thứ Năm', 'Thứ Sáu', 'Thứ Bảy'];
@@ -43,11 +44,13 @@ export const DesktopWidget: React.FC<DesktopWidgetProps> = ({
   // Calculate day score e.g. 78/100
   const dayScore = dayDetail.isHoangDaoDay ? 88 : dayDetail.isTamNuong || dayDetail.isNguyetKy ? 45 : 78;
 
+  const posClass = widgetPosition === 'left' ? 'left-4' : 'right-4';
+
   if (isMinimized) {
     return (
       <div 
         onClick={() => setIsMinimized(false)}
-        className="hidden md:flex fixed bottom-4 right-4 z-50 bg-oriental-red-900 text-oriental-gold-300 p-2.5 rounded-full shadow-2xl border-2 border-oriental-gold-400 cursor-pointer items-center gap-2 hover:scale-105 transition-all select-none"
+        className={`hidden md:flex fixed bottom-4 ${posClass} z-40 bg-oriental-red-900 text-oriental-gold-300 p-2.5 rounded-full shadow-2xl border-2 border-oriental-gold-400 cursor-pointer items-center gap-2 hover:scale-105 transition-all select-none`}
         title="Bấm để mở rộng Widget An Lịch AI"
       >
         <Sparkles className="w-4 h-4 text-oriental-gold-300" />
@@ -57,9 +60,9 @@ export const DesktopWidget: React.FC<DesktopWidgetProps> = ({
   }
 
   return (
-    <div className="hidden md:block fixed bottom-4 right-4 z-50 w-72 sm:w-80 bg-gradient-to-b from-amber-50/95 via-white/95 to-amber-100/90 dark:from-oriental-dark-card/95 dark:to-oriental-dark-bg/95 backdrop-blur-md rounded-2xl shadow-2xl border-2 border-amber-300/90 dark:border-oriental-dark-border p-3.5 select-none transition-all">
+    <div className={`hidden md:block fixed bottom-4 ${posClass} z-40 w-72 sm:w-80 bg-gradient-to-b from-amber-50/95 via-white/95 to-amber-100/90 dark:from-oriental-dark-card/95 dark:to-oriental-dark-bg/95 backdrop-blur-md rounded-2xl shadow-2xl border-2 border-amber-300/90 dark:border-oriental-dark-border p-3.5 select-none transition-all`}>
       
-      {/* Widget Header Bar (-webkit-app-region drag for Electron) */}
+      {/* Widget Header Bar */}
       <div className="flex items-center justify-between pb-2 mb-2 border-b border-amber-200/80 dark:border-oriental-dark-border cursor-move">
         <div className="flex items-center space-x-1.5">
           <img 
@@ -73,6 +76,14 @@ export const DesktopWidget: React.FC<DesktopWidgetProps> = ({
         </div>
 
         <div className="flex items-center space-x-1">
+          <button
+            type="button"
+            onClick={() => setWidgetPosition(prev => prev === 'left' ? 'right' : 'left')}
+            className="p-1 rounded-md text-slate-400 hover:text-amber-800 dark:hover:text-amber-200 hover:bg-amber-200/50"
+            title={widgetPosition === 'left' ? "Chuyển Widget sang bên Phải" : "Chuyển Widget sang bên Trái"}
+          >
+            <ArrowLeftRight className="w-3.5 h-3.5" />
+          </button>
           <button
             type="button"
             onClick={() => setIsMinimized(true)}

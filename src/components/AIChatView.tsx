@@ -8,19 +8,21 @@ import {
   Compass,
   Star,
   Pin,
-  Bot,
   Settings as SettingsIcon,
   ShieldCheck,
 } from 'lucide-react';
 import { AppSettings, ChatMessage, DayDetail } from '../types';
 import { aiService } from '../services/aiService';
 import { storageService, AI_PROVIDER_PRESETS } from '../services/storageService';
+import aiLogoImg from '../assets/ai-logo.jpg';
 
 interface AIChatViewProps {
   settings: AppSettings;
   onOpenSettings: () => void;
   selectedDayContext: DayDetail | null;
   onClearContext: () => void;
+  onClose?: () => void;
+  isFloating?: boolean;
 }
 
 export const AIChatView: React.FC<AIChatViewProps> = ({
@@ -28,6 +30,8 @@ export const AIChatView: React.FC<AIChatViewProps> = ({
   onOpenSettings,
   selectedDayContext,
   onClearContext,
+  onClose,
+  isFloating = false,
 }) => {
   const [messages, setMessages] = useState<ChatMessage[]>(() => storageService.getChatHistory());
   const [inputQuery, setInputQuery] = useState<string>('');
@@ -111,25 +115,27 @@ export const AIChatView: React.FC<AIChatViewProps> = ({
   };
 
   return (
-    <div className="bg-white/95 dark:bg-oriental-dark-card/95 rounded-2xl sm:rounded-3xl shadow-2xl border-2 border-amber-200/90 dark:border-oriental-dark-border p-2.5 sm:p-6 backdrop-blur-md flex flex-col h-[calc(100vh-130px)] sm:h-[calc(100vh-150px)] max-h-[850px] transition-all relative">
+    <div className={`bg-white/95 dark:bg-oriental-dark-card/95 rounded-2xl sm:rounded-3xl shadow-2xl border-2 border-amber-200/90 dark:border-oriental-dark-border p-2.5 sm:p-5 backdrop-blur-md flex flex-col transition-all relative ${
+      isFloating ? 'h-full w-full' : 'h-[calc(100vh-130px)] sm:h-[calc(100vh-150px)] max-h-[850px]'
+    }`}>
       
       {/* Header Bar - Luxury Header Optimized for Mobile & Desktop */}
       <div className="flex items-center justify-between border-b border-amber-200/80 dark:border-oriental-dark-border pb-2.5 mb-2.5 shrink-0">
         <div className="flex items-center space-x-2 sm:space-x-3.5 min-w-0">
-          <div className="w-9 h-9 sm:w-12 sm:h-12 rounded-xl sm:rounded-2xl bg-gradient-to-br from-oriental-red-800 via-oriental-red-900 to-oriental-red-950 text-oriental-gold-300 flex items-center justify-center shadow-oriental text-lg sm:text-2xl shrink-0 border-2 border-oriental-gold-400">
-            🤖
+          <div className="w-9 h-9 sm:w-11 sm:h-11 rounded-xl sm:rounded-2xl bg-gradient-to-br from-oriental-red-800 via-oriental-red-900 to-oriental-red-950 text-oriental-gold-300 flex items-center justify-center shadow-oriental shrink-0 border-2 border-oriental-gold-400 overflow-hidden p-0.5">
+            <img src={aiLogoImg} alt="Trợ Lý AI Logo" className="w-full h-full object-contain rounded-lg" />
           </div>
           <div className="min-w-0">
             <div className="flex items-center space-x-1.5 sm:space-x-2">
-              <h2 className="text-sm sm:text-xl font-serif font-black text-oriental-red-900 dark:text-oriental-gold-400 tracking-wide leading-tight truncate">
+              <h2 className="text-sm sm:text-lg font-serif font-black text-oriental-red-900 dark:text-oriental-gold-400 tracking-wide leading-tight truncate">
                 Trợ Lý AI An Lịch
               </h2>
-              <span className="hidden md:inline-flex px-2 py-0.5 text-[10px] font-bold rounded-full bg-emerald-100 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-400 border border-emerald-300 items-center gap-1">
-                <ShieldCheck className="w-3 h-3 text-emerald-600" /> Trực Tiếp Client
+              <span className="hidden sm:inline-flex px-2 py-0.5 text-[10px] font-bold rounded-full bg-emerald-100 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-400 border border-emerald-300 items-center gap-1">
+                <ShieldCheck className="w-3 h-3 text-emerald-600" /> Client
               </span>
             </div>
             <p className="text-[10px] sm:text-xs text-amber-900/75 dark:text-amber-200/70 truncate mt-0.5">
-              Tư vấn Phong Thủy • Tử Vi 12 Con Giáp • Giờ Cát Tường
+              Tư vấn Phong Thủy • Tử Vi • Giờ Cát Tường
             </p>
           </div>
         </div>
@@ -138,11 +144,11 @@ export const AIChatView: React.FC<AIChatViewProps> = ({
           {/* Active Provider Model Badge */}
           <button
             onClick={onOpenSettings}
-            className="px-2.5 py-1 sm:px-3 sm:py-1.5 rounded-full font-bold text-[10px] sm:text-xs bg-emerald-100 dark:bg-emerald-950/90 text-emerald-800 dark:text-emerald-300 border border-emerald-400/80 flex items-center gap-1 shadow-2xs hover:bg-emerald-200 dark:hover:bg-emerald-900 transition-colors cursor-pointer"
+            className="px-2 py-1 sm:px-3 sm:py-1.5 rounded-full font-bold text-[10px] sm:text-xs bg-emerald-100 dark:bg-emerald-950/90 text-emerald-800 dark:text-emerald-300 border border-emerald-400/80 flex items-center gap-1 shadow-2xs hover:bg-emerald-200 dark:hover:bg-emerald-900 transition-colors cursor-pointer"
             title="Nhấp để thay đổi Model AI trong Cài đặt"
           >
             <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse shrink-0" />
-            <span className="font-mono truncate max-w-[100px] sm:max-w-[180px]">
+            <span className="font-mono truncate max-w-[80px] sm:max-w-[150px]">
               {preset.name}
             </span>
             <SettingsIcon className="w-3 h-3 text-emerald-700 dark:text-emerald-400 shrink-0" />
@@ -154,7 +160,17 @@ export const AIChatView: React.FC<AIChatViewProps> = ({
               className="p-1.5 sm:p-2 rounded-xl text-slate-400 hover:text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950/40 transition-colors"
               title="Xóa lịch sử trò chuyện"
             >
-              <Trash2 className="w-4 h-4 sm:w-4.5 sm:h-4.5" />
+              <Trash2 className="w-4 h-4" />
+            </button>
+          )}
+
+          {onClose && (
+            <button
+              onClick={onClose}
+              className="p-1.5 sm:p-2 rounded-xl text-amber-900 dark:text-amber-200 hover:bg-amber-200/60 dark:hover:bg-amber-900/60 transition-colors cursor-pointer"
+              title="Đóng cửa sổ Trợ Lý AI"
+            >
+              <X className="w-5 h-5 font-bold" />
             </button>
           )}
         </div>
@@ -188,8 +204,8 @@ export const AIChatView: React.FC<AIChatViewProps> = ({
         {/* Welcome Banner when history is empty */}
         {messages.length === 0 && (
           <div className="bg-gradient-to-br from-amber-50/90 via-white to-amber-50/80 dark:from-oriental-dark-bg/90 dark:to-oriental-dark-card p-4 sm:p-7 rounded-2xl sm:rounded-3xl border-2 border-amber-200/80 dark:border-oriental-dark-border text-center my-auto shadow-sm">
-            <div className="w-11 h-11 sm:w-14 sm:h-14 rounded-2xl bg-gradient-to-br from-oriental-red-800 to-oriental-red-950 text-oriental-gold-300 flex items-center justify-center text-xl sm:text-3xl mx-auto mb-2.5 shadow-oriental border-2 border-oriental-gold-400">
-              <Sparkles className="w-5 h-5 sm:w-7 sm:h-7 text-oriental-gold-300" />
+            <div className="w-14 h-14 sm:w-18 sm:h-18 rounded-2xl bg-gradient-to-br from-oriental-red-800 to-oriental-red-950 text-oriental-gold-300 flex items-center justify-center mx-auto mb-2.5 shadow-oriental border-2 border-oriental-gold-400 overflow-hidden p-1">
+              <img src={aiLogoImg} alt="Trợ Lý AI Logo" className="w-full h-full object-contain rounded-xl" />
             </div>
             <h3 className="font-serif font-black text-base sm:text-xl text-oriental-red-900 dark:text-oriental-gold-400 mb-1 tracking-wide">
               Kính Chào Quý Gia Chủ!
@@ -227,8 +243,8 @@ export const AIChatView: React.FC<AIChatViewProps> = ({
             }`}
           >
             {msg.role === 'assistant' && (
-              <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-xl sm:rounded-2xl bg-gradient-to-br from-oriental-red-800 to-oriental-red-950 text-oriental-gold-300 flex items-center justify-center font-extrabold text-xs sm:text-base shadow-md shrink-0 mt-0.5 border border-oriental-gold-400">
-                <Bot className="w-4 h-4 sm:w-5 sm:h-5 text-oriental-gold-300" />
+              <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-xl sm:rounded-2xl bg-gradient-to-br from-oriental-red-800 to-oriental-red-950 text-oriental-gold-300 flex items-center justify-center shadow-md shrink-0 mt-0.5 border border-oriental-gold-400 overflow-hidden p-0.5">
+                <img src={aiLogoImg} alt="AI Avatar" className="w-full h-full object-contain rounded-lg" />
               </div>
             )}
 
@@ -251,8 +267,8 @@ export const AIChatView: React.FC<AIChatViewProps> = ({
         {/* Streaming Realtime Response Output */}
         {isLoading && currentStreamText && (
           <div className="flex items-start space-x-2 sm:space-x-2.5 justify-start">
-            <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-xl sm:rounded-2xl bg-gradient-to-br from-oriental-red-800 to-oriental-red-950 text-oriental-gold-300 flex items-center justify-center font-extrabold text-xs sm:text-base shadow-md shrink-0 mt-0.5 border border-oriental-gold-400">
-              <Bot className="w-4 h-4 sm:w-5 sm:h-5 text-oriental-gold-300" />
+            <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-xl sm:rounded-2xl bg-gradient-to-br from-oriental-red-800 to-oriental-red-950 text-oriental-gold-300 flex items-center justify-center shadow-md shrink-0 mt-0.5 border border-oriental-gold-400 overflow-hidden p-0.5">
+              <img src={aiLogoImg} alt="AI Avatar" className="w-full h-full object-contain rounded-lg" />
             </div>
             <div className="max-w-[92%] sm:max-w-[83%] rounded-2xl rounded-tl-xs p-3.5 sm:p-5 bg-white/95 dark:bg-oriental-dark-card/95 border-2 border-amber-200/90 dark:border-oriental-dark-border text-slate-800 dark:text-amber-100 shadow-md leading-relaxed">
               {renderFormattedContent(currentStreamText)}

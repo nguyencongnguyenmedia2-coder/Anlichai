@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
-import { Calendar, Compass, Bot, Settings, Moon, Sun, Sparkles, ShieldCheck, Star, CalendarCheck, BookOpen } from 'lucide-react';
+import { Calendar, Compass, Settings, Moon, Sun, Sparkles, ShieldCheck, Star, CalendarCheck, BookOpen } from 'lucide-react';
 import { AppSettings } from '../types';
 import logoImg from '../assets/logo.png';
 
 interface HeaderProps {
-  activeTab: 'calendar' | 'events' | 'personal' | 'blog' | 'battrach' | 'ai' | 'settings';
-  setActiveTab: (tab: 'calendar' | 'events' | 'personal' | 'blog' | 'battrach' | 'ai' | 'settings') => void;
+  activeTab: 'calendar' | 'events' | 'personal' | 'blog' | 'battrach' | 'astrology' | 'ai' | 'settings';
+  setActiveTab: (tab: 'calendar' | 'events' | 'personal' | 'blog' | 'battrach' | 'astrology' | 'ai' | 'settings') => void;
   settings: AppSettings;
   onUpdateSettings: (newSettings: AppSettings) => void;
   onJumpToToday: () => void;
@@ -125,32 +125,21 @@ export const Header: React.FC<HeaderProps> = ({
                 }`}
               >
                 <BookOpen className="w-4 h-4 text-oriental-gold-400" />
-                <span>Phong Thủy</span>
+                <span>Bài Viết</span>
               </button>
 
               <button
-                onClick={() => setActiveTab('battrach')}
+                onClick={() => setActiveTab('astrology')}
                 className={`flex items-center space-x-2 px-3.5 py-2 rounded-xl font-bold text-xs sm:text-sm transition-all duration-200 ${
-                  activeTab === 'battrach'
+                  activeTab === 'astrology' || activeTab === 'battrach'
                     ? 'bg-gradient-to-r from-oriental-red-800 to-oriental-red-900 text-oriental-gold-300 shadow-oriental border border-oriental-gold-500/40 scale-[1.02]'
                     : 'text-slate-700 dark:text-amber-200/80 hover:bg-amber-200/60 dark:hover:bg-amber-900/40'
                 }`}
               >
-                <Compass className="w-4 h-4 text-amber-500" />
-                <span>Bát Trạch</span>
+                <Sparkles className="w-4 h-4 text-oriental-gold-400" />
+                <span>Chiêm Tinh</span>
               </button>
 
-              <button
-                onClick={() => setActiveTab('ai')}
-                className={`relative flex items-center space-x-2 px-3.5 py-2 rounded-xl font-bold text-xs sm:text-sm transition-all duration-200 ${
-                  activeTab === 'ai'
-                    ? 'bg-gradient-to-r from-oriental-red-800 to-oriental-red-900 text-oriental-gold-300 shadow-oriental border border-oriental-gold-500/40 scale-[1.02]'
-                    : 'text-slate-700 dark:text-amber-200/80 hover:bg-amber-200/60 dark:hover:bg-amber-900/40'
-                }`}
-              >
-                <Bot className="w-4 h-4 text-oriental-gold-400 animate-pulse" />
-                <span>Trợ Lý AI</span>
-              </button>
 
               {isAdminMode && (
                 <button
@@ -259,7 +248,7 @@ export const Header: React.FC<HeaderProps> = ({
 
           <button
             onClick={() => setActiveTab('blog')}
-            aria-label="Góc Phong Thủy"
+            aria-label="Xem Bài Viết"
             className={`flex flex-col items-center justify-center py-1.5 px-2 rounded-xl transition-all active:scale-95 min-w-[44px] min-h-[44px] ${
               activeTab === 'blog'
                 ? 'text-oriental-gold-300 bg-oriental-red-800 font-bold shadow-oriental scale-105 border border-oriental-gold-500/30'
@@ -267,34 +256,22 @@ export const Header: React.FC<HeaderProps> = ({
             }`}
           >
             <BookOpen className="w-4 h-4 mb-0.5" />
-            <span className="text-[10px] leading-none font-semibold">Phong Thủy</span>
+            <span className="text-[10px] leading-none font-semibold">Bài Viết</span>
           </button>
 
           <button
-            onClick={() => setActiveTab('battrach')}
-            aria-label="Tra Cứu Bát Trạch"
+            onClick={() => setActiveTab('astrology')}
+            aria-label="Chiêm Tinh & Bát Trạch"
             className={`flex flex-col items-center justify-center py-1.5 px-2 rounded-xl transition-all active:scale-95 min-w-[44px] min-h-[44px] ${
-              activeTab === 'battrach'
+              activeTab === 'astrology' || activeTab === 'battrach'
                 ? 'text-oriental-gold-300 bg-oriental-red-800 font-bold shadow-oriental scale-105 border border-oriental-gold-500/30'
                 : 'text-slate-800 dark:text-amber-100 hover:text-oriental-red-800'
             }`}
           >
-            <Compass className="w-4 h-4 mb-0.5" />
-            <span className="text-[10px] leading-none font-semibold">Bát Trạch</span>
+            <Sparkles className="w-4 h-4 mb-0.5" />
+            <span className="text-[10px] leading-none font-semibold">Chiêm Tinh</span>
           </button>
 
-          <button
-            onClick={() => setActiveTab('ai')}
-            aria-label="Trợ Lý AI Phong Thủy"
-            className={`flex flex-col items-center justify-center py-1.5 px-2 rounded-xl transition-all relative active:scale-95 min-w-[44px] min-h-[44px] ${
-              activeTab === 'ai'
-                ? 'text-oriental-gold-300 bg-oriental-red-800 font-bold shadow-oriental scale-105 border border-oriental-gold-500/30'
-                : 'text-slate-800 dark:text-amber-100 hover:text-oriental-red-800'
-            }`}
-          >
-            <Bot className="w-4 h-4 mb-0.5" />
-            <span className="text-[10px] leading-none font-semibold">Trợ Lý AI</span>
-          </button>
 
         </div>
       </div>
