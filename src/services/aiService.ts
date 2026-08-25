@@ -60,17 +60,17 @@ Phong cách trả lời & Định dạng:
 - Việc Kiêng Kỵ: ${dayContext.badThings.join(', ') || 'Không kỵ đặc biệt'}`;
     }
 
-    // Direct fetch for Google Gemini native API
+    // Direct fetch for Google Gemini native API (Securely pass key via x-goog-api-key header)
     if (provider === 'gemini' || baseUrl.includes('generativelanguage.googleapis.com')) {
       return this.sendGeminiNativeMessage(baseUrl, apiKey, model, systemPrompt, userMessage, history, onChunk);
     }
 
-    // Direct fetch for Anthropic Claude native API
+    // Direct fetch for Anthropic Claude native API (Securely pass key via x-api-key header)
     if (provider === 'claude' && baseUrl.includes('api.anthropic.com')) {
       return this.sendClaudeMessage(baseUrl, apiKey, model, systemPrompt, userMessage, history, onChunk);
     }
 
-    // OpenAI compatible endpoint formatting (OpenAI, DeepSeek, Kimi, Local AI, Custom Proxy)
+    // OpenAI compatible endpoint formatting (OpenAI, DeepSeek, Kimi, Local AI, Custom Proxy - Securely pass key via Authorization Bearer header)
     let endpointUrl = baseUrl;
     if (!endpointUrl.endsWith('/chat/completions')) {
       endpointUrl = `${endpointUrl}/chat/completions`;
@@ -170,7 +170,7 @@ Phong cách trả lời & Định dạng:
     }
   },
 
-  // Native Google Gemini REST Streaming Handler
+  // Native Google Gemini REST Streaming Handler (Securely passing key in x-goog-api-key HTTP Header)
   async sendGeminiNativeMessage(
     _baseUrl: string,
     apiKey: string,
@@ -186,7 +186,8 @@ Phong cách trả lời & Định dạng:
     }
     const activeModel = model === 'gemini-2.5-flash' || model === 'gemini-1.5-flash' ? 'gemini-3.6-flash' : (model || 'gemini-3.6-flash');
 
-    const endpointUrl = `https://generativelanguage.googleapis.com/v1beta/models/${activeModel}:streamGenerateContent?alt=sse&key=${activeApiKey}`;
+    // Clean URL without query parameter key (Key passed via x-goog-api-key header)
+    const endpointUrl = `https://generativelanguage.googleapis.com/v1beta/models/${activeModel}:streamGenerateContent?alt=sse`;
 
     const contents = [
       ...history.slice(-8).map((msg) => ({
@@ -203,6 +204,7 @@ Phong cách trả lời & Định dạng:
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
+        'x-goog-api-key': activeApiKey,
       },
       body: JSON.stringify({ contents }),
     });
