@@ -1,0 +1,194 @@
+export type EventType = 'phat-giao' | 'dan-gian' | 'tet' | 'khac';
+
+export interface EventItem {
+  id: string;
+  name: string;
+  description: string;
+  lunarDay: number;
+  lunarMonth: number;
+  isLunar?: boolean; // Default true, if false it's solar date
+  solarDay?: number;
+  solarMonth?: number;
+  type: EventType;
+  color: string;
+  image?: string;
+  notify: boolean;
+  isCustom?: boolean;
+}
+
+export interface HoangDaoHour {
+  name: string;
+  timeRange: string;
+  isHoangDao: boolean;
+  canChi: string;
+}
+
+export interface XuatHanhHour {
+  direction: string;
+  description: string;
+  rating: 'Good' | 'Bad' | 'Neutral';
+}
+
+export interface DayDetail {
+  solarDate: Date;
+  solarDay: number;
+  solarMonth: number;
+  solarYear: number;
+  
+  lunarDay: number;
+  lunarMonth: number;
+  lunarYear: number;
+  isLeapMonth: boolean;
+  lunarMonthName: string;
+  
+  canChiDay: string;
+  canChiMonth: string;
+  canChiYear: string;
+  
+  napAm: string;
+  tietKhi: string;
+  truc: string;
+  sao: string;
+  
+  isTamNuong: boolean;
+  isNguyetKy: boolean;
+  isHoangDaoDay: boolean; // Day grade
+  dayRating: 'Tốt (Hoàng Đạo)' | 'Xấu (Hắc Đạo)' | 'Bình thường';
+  
+  hoangDaoHours: HoangDaoHour[];
+  hacDaoHours: HoangDaoHour[];
+  
+  goodThings: string[];
+  badThings: string[];
+  xuatHanhDirections: {
+    taiThan: string;
+    hyThan: string;
+  };
+  
+  events: EventItem[];
+  personalEvents?: PersonalEvent[];
+}
+
+export interface ChatMessage {
+  id: string;
+  role: 'user' | 'assistant' | 'system';
+  content: string;
+  timestamp: number;
+}
+
+export type AIProvider = 'deepseek' | 'gemini' | 'openai' | 'claude' | 'kimi' | 'local' | 'custom';
+
+export interface AppSettings {
+  theme: 'light' | 'dark' | 'oriental';
+  notificationsEnabled: boolean;
+  notificationTime: string; // e.g. "07:00"
+  notifyBeforeDays: number; // 0, 1, 3
+  bgType: 'default' | 'pattern' | 'custom';
+  customBgUrl: string;
+
+  // Private AI Assistant Settings (Direct client-to-API, no intermediate server)
+  aiProvider: AIProvider;
+  aiApiKey: string;
+  aiModel: string;
+  aiBaseUrl: string;
+
+  // Legacy fields maintained for compatibility
+  geminiApiKey: string;
+  geminiModel: string;
+  adminPin: string;
+  timeZone: string;
+}
+
+export type PersonalEventType =
+  | 'giỗ'
+  | 'sinh-nhat'
+  | 'ngay-cuoi'
+  | 'khai-truong'
+  | 'di-chua'
+  | 'hop'
+  | 'cong-viec'
+  | 'deadline'
+  | 'di-xa'
+  | 'quan-trong';
+
+export interface PersonalEvent {
+  id: string;
+  title: string;
+  note?: string;
+  category: PersonalEventType;
+  isLunar: boolean; // true = Âm Lịch, false = Dương Lịch
+  day: number;
+  month: number;
+  year?: number; // Optional specific year
+  time?: string; // e.g. "09:00"
+  remindBeforeDays: number; // 0, 1, 3, 7
+  color: string;
+  notify: boolean;
+  createdAt: number;
+}
+
+export interface ZodiacHoroscope {
+  zodiacName: string;
+  earthlyBranch: string;
+  element: string;
+  ratingScore: number; // 1 to 5 stars
+  overview: string;
+  career: string;
+  wealth: string;
+  love: string;
+  health: string;
+  supportingZodiac: string;
+  auspiciousHour: string;
+  luckyNumbers: number[];
+  luckyColors: string[];
+}
+
+export interface BlogSection {
+  heading: string;
+  body: string;
+  bulletPoints?: string[];
+  callout?: string;
+}
+
+export interface BatTrachDirection {
+  name: string; // e.g. "Sinh Khí", "Thiên Y", "Họa Hại"...
+  type: 'good' | 'bad';
+  direction: string; // e.g. "Đông", "Nam"...
+  element: string;
+  meaning: string;
+}
+
+export interface BatTrachResult {
+  birthYear: number;
+  gender: 'nam' | 'nu';
+  lunarYearCanChi: string;
+  cungMenh: string; // e.g. "Càn", "Khảm", "Cấn"...
+  menhNguHanh: string; // e.g. "Tây Tứ Mệnh" / "Đông Tứ Mệnh"
+  element: string; // e.g. "Kim", "Thủy"...
+  goodDirections: BatTrachDirection[];
+  badDirections: BatTrachDirection[];
+}
+
+export interface BlogPost {
+  id: string;
+  slug: string;
+  title: string;
+  summary: string;
+  content?: string;
+  sections?: BlogSection[];
+  category: 'phong-thuy' | 'lich-am' | 'tu-vi' | 'van-khan';
+  author: string;
+  publishedDate: string;
+  readTime: string;
+  tags: string[];
+}
+
+declare global {
+  interface Window {
+    electronAPI?: {
+      showNotification: (options: { title?: string; body?: string; icon?: string }) => void;
+      onNavigateTab: (callback: (tab: string) => void) => void;
+      onToggleWidget: (callback: () => void) => void;
+    };
+  }
+}
