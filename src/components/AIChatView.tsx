@@ -345,16 +345,7 @@ export const AIChatView: React.FC<AIChatViewProps> = ({
   );
 };
 
-// Helper: Completely removes markdown headers like ### or ## and asterisks ***
-function cleanMarkdownText(str: string): string {
-  if (!str) return '';
-  return str
-    .replace(/^#{1,6}\s*/gm, '') // Remove ### headers
-    .replace(/\*{1,3}/g, '')    // Remove * asterisks
-    .trim();
-}
-
-// Helper: Formats AI responses into elegant, clean magazine-style typography without raw ### or **
+// Helper: Formats AI responses into elegant, clean magazine-style typography without raw ### or *
 function renderFormattedContent(text: string) {
   if (!text) return null;
 
@@ -418,20 +409,38 @@ function renderFormattedContent(text: string) {
   );
 }
 
-// Helper: Parses inline **bold** text without showing asterisks
+// Helper: Completely removes unwanted raw markdown symbols (*, **, ###, _, `)
+function cleanMarkdownText(str: string): string {
+  if (!str) return '';
+  return str
+    .replace(/^#{1,6}\s*/gm, '') // Remove ### headers
+    .replace(/\*/g, '')          // Remove all * asterisks completely
+    .replace(/[`_]/g, '')        // Remove backticks and underscores
+    .trim();
+}
+
+// Helper: Parses inline **bold** or *bold* text without showing any asterisks (*), hashes (#), or underscores (_)
 function renderRichInlineText(text: string) {
   if (!text) return null;
-  // Replace **bold** with <strong> elements
-  const parts = text.split(/(\*\*.*?\*\*)/g);
+
+  // Clean lead hashes or backticks/underscores
+  const cleanInput = text.replace(/^#+\s*/g, '').replace(/[`_]/g, '');
+
+  // Split by **bold** or *bold*
+  const parts = cleanInput.split(/(\*\*.*?\*\*|\*.*?\*)/g);
+
   return parts.map((part, i) => {
-    if (part.startsWith('**') && part.endsWith('**')) {
-      const boldContent = part.slice(2, -2);
+    if ((part.startsWith('**') && part.endsWith('**')) || (part.startsWith('*') && part.endsWith('*'))) {
+      const boldContent = part.replace(/\*/g, '').trim();
+      if (!boldContent) return null;
       return (
         <strong key={i} className="font-extrabold text-oriental-red-950 dark:text-oriental-gold-300">
           {boldContent}
         </strong>
       );
     }
-    return part;
+    // For normal text, strip all remaining lone asterisks
+    const pureText = part.replace(/\*/g, '');
+    return pureText;
   });
 }
