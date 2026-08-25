@@ -23,11 +23,11 @@ export const AI_PROVIDER_PRESETS: Record<string, {
   },
   gemini: {
     name: 'Google Gemini',
-    baseUrl: 'https://generativelanguage.googleapis.com/v1beta/openai',
-    defaultModel: 'gemini-2.5-flash',
+    baseUrl: 'https://generativelanguage.googleapis.com/v1beta',
+    defaultModel: 'gemini-3.6-flash',
     requiresKey: true,
-    hintKey: 'AIzaSy... (Lấy tại aistudio.google.com)',
-    models: ['gemini-2.5-flash', 'gemini-1.5-pro', 'gemini-2.0-flash-exp'],
+    hintKey: 'AIzaSy... / AQ.Ab8... (Lấy tại aistudio.google.com)',
+    models: ['gemini-3.6-flash', 'gemini-3.7-flash', 'gemini-3.5-flash', 'gemini-1.5-pro'],
   },
   openai: {
     name: 'OpenAI (ChatGPT)',
@@ -79,14 +79,14 @@ const DEFAULT_SETTINGS: AppSettings = {
   bgType: 'default',
   customBgUrl: '',
   
-  // Out-Of-The-Box Default AI Assistant (Pre-configured Server & Key for all website visitors)
-  aiProvider: 'custom',
-  aiApiKey: import.meta.env.VITE_ZENMUX_API_KEY || '',
-  aiModel: import.meta.env.VITE_ZENMUX_MODEL || 'deepseek/deepseek-v4-flash-vision-exp-free',
-  aiBaseUrl: import.meta.env.VITE_ZENMUX_BASE_URL || 'https://zenmux.ai/api/v1',
+  // Out-Of-The-Box Default AI Assistant (Google Gemini 3.6 Flash - Instant & Reliable)
+  aiProvider: 'gemini',
+  aiApiKey: import.meta.env.VITE_GEMINI_API_KEY || '',
+  aiModel: 'gemini-3.6-flash',
+  aiBaseUrl: 'https://generativelanguage.googleapis.com/v1beta',
   
-  geminiApiKey: '',
-  geminiModel: 'google/gemini-2.5-flash',
+  geminiApiKey: import.meta.env.VITE_GEMINI_API_KEY || '',
+  geminiModel: 'gemini-3.6-flash',
   adminPin: '123456',
   timeZone: 'Asia/Ho_Chi_Minh',
 };
@@ -163,20 +163,16 @@ export const storageService = {
         const parsed = JSON.parse(data);
         const merged = { ...DEFAULT_SETTINGS, ...parsed };
 
-        // Ensure default fields sync or defaults apply
-        if (!merged.aiProvider) {
-          merged.aiProvider = 'custom';
-        }
-        if (!merged.aiBaseUrl) {
-          const preset = AI_PROVIDER_PRESETS[merged.aiProvider] || AI_PROVIDER_PRESETS.custom;
-          merged.aiBaseUrl = preset.baseUrl;
-        }
-        if (!merged.aiModel) {
-          const preset = AI_PROVIDER_PRESETS[merged.aiProvider] || AI_PROVIDER_PRESETS.deepseek;
-          merged.aiModel = preset.defaultModel;
-        }
-        if (merged.aiApiKey === undefined) {
-          merged.aiApiKey = import.meta.env.VITE_ZENMUX_API_KEY || '';
+        // Auto-fix stale keys or old provider settings
+        const isStaleDeepSeekKey = merged.aiApiKey?.endsWith('e6ce') || merged.aiApiKey?.startsWith('sk-ai-v1-');
+        const isInvalidModel = merged.aiModel === 'gemini-2.5-flash' || merged.aiModel === 'gemini-1.5-flash' || merged.aiModel === 'deepseek-chat';
+
+        if (isStaleDeepSeekKey || isInvalidModel || !merged.aiProvider || (merged.aiProvider === 'deepseek' && merged.aiApiKey?.endsWith('e6ce'))) {
+          merged.aiProvider = 'gemini';
+          merged.aiApiKey = import.meta.env.VITE_GEMINI_API_KEY || '';
+          merged.aiModel = 'gemini-3.6-flash';
+          merged.aiBaseUrl = 'https://generativelanguage.googleapis.com/v1beta';
+          this.saveSettings(merged);
         }
 
         return merged;

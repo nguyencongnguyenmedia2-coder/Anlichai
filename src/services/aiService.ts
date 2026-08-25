@@ -10,17 +10,23 @@ export const aiService = {
     overrideSettings?: AppSettings
   ): Promise<string> {
     const currentSettings = overrideSettings || storageService.getSettings();
-    const provider = currentSettings.aiProvider || 'custom';
-    const preset = AI_PROVIDER_PRESETS[provider] || AI_PROVIDER_PRESETS.custom;
+    let provider = currentSettings.aiProvider || 'gemini';
+    let preset = AI_PROVIDER_PRESETS[provider] || AI_PROVIDER_PRESETS.gemini;
 
     let apiKey = (currentSettings.aiApiKey || '').trim();
     if (!apiKey && provider !== 'local') {
-      // Fallback to env keys if user hasn't configured custom key
-      apiKey = (import.meta.env.VITE_ZENMUX_API_KEY || import.meta.env.VITE_GEMINI_API_KEY || '').trim();
+      apiKey = (import.meta.env.VITE_GEMINI_API_KEY || import.meta.env.VITE_ZENMUX_API_KEY || '').trim();
+    }
+
+    // Smart fallback if user has stale invalid DeepSeek key (ends in e6ce or sk-ai-v1)
+    if (provider === 'deepseek' && (apiKey.endsWith('e6ce') || apiKey.startsWith('sk-ai-v1-') || !apiKey)) {
+      provider = 'gemini';
+      preset = AI_PROVIDER_PRESETS.gemini;
+      apiKey = (import.meta.env.VITE_GEMINI_API_KEY || '').trim();
     }
 
     if (!apiKey && preset.requiresKey) {
-      const errorMsg = `⚠️ Chưa cài đặt API Key cho ${preset.name}. Vui lòng vào tab [Cài Đặt] -> nhập Key của bạn để sử dụng Trợ Lý AI riêng tư không qua server trung gian!`;
+      const errorMsg = `⚠️ Chưa cài đặt API Key cho ${preset.name}. Vui lòng vào tab [Cài Đặt] -> nhập Key của bạn để sử dụng Trợ Lý AI!`;
       onChunk(errorMsg);
       return errorMsg;
     }
@@ -28,7 +34,7 @@ export const aiService = {
     let baseUrl = (currentSettings.aiBaseUrl || preset.baseUrl).trim().replace(/\/+$/, '');
     let model = (currentSettings.aiModel || preset.defaultModel).trim();
 
-    // Comprehensive System Prompt tailored for Vietnamese Feng Shui & Astrology
+    // System Prompt tailored for Vietnamese Feng Shui & Astrology
     let systemPrompt = `Bạn là Trợ Lý Trí Tuệ Nhân Tạo "An Lịch AI" - Chuyên gia tư vấn cao cấp về Âm Dương Lịch Việt Nam, Phong Thủy Bát Trạch, Tử Vi 12 Con Giáp, Can Chi, Nạp Âm, 12 Trực, Nhị Thập Bát Tú, Giờ Cát Tường & Hướng Xuất Hành.
 Phương châm làm việc của bạn: "Xem ngày • Hiểu mình • Sống an".
 
@@ -53,12 +59,17 @@ Phong cách trả lời & Định dạng:
 - Việc Kiêng Kỵ: ${dayContext.badThings.join(', ') || 'Không kỵ đặc biệt'}`;
     }
 
-    // Direct fetch for Anthropic Claude native API format
+    // Direct fetch for Google Gemini native API
+    if (provider === 'gemini' || baseUrl.includes('generativelanguage.googleapis.com')) {
+      return this.sendGeminiNativeMessage(baseUrl, apiKey, model, systemPrompt, userMessage, history, onChunk);
+    }
+
+    // Direct fetch for Anthropic Claude native API
     if (provider === 'claude' && baseUrl.includes('api.anthropic.com')) {
       return this.sendClaudeMessage(baseUrl, apiKey, model, systemPrompt, userMessage, history, onChunk);
     }
 
-    // OpenAI compatible endpoint formatting (OpenAI, Gemini, DeepSeek, Kimi, Local AI, Custom Proxy)
+    // OpenAI compatible endpoint formatting (OpenAI, DeepSeek, Kimi, Local AI, Custom Proxy)
     let endpointUrl = baseUrl;
     if (!endpointUrl.endsWith('/chat/completions')) {
       endpointUrl = `${endpointUrl}/chat/completions`;
@@ -156,6 +167,86 @@ Phong cách trả lời & Định dạng:
       console.error(`Lỗi khi gọi API AI (${provider}):`, error);
       throw error;
     }
+  },
+
+  // Native Google Gemini REST Streaming Handler
+  async sendGeminiNativeMessage(
+    _baseUrl: string,
+    apiKey: string,
+    model: string,
+    systemPrompt: string,
+    userMessage: string,
+    history: ChatMessage[],
+    onChunk: (chunkText: string) => void
+  ): Promise<string> {
+    let activeApiKey = apiKey.trim();
+    if (!activeApiKey || activeApiKey.endsWith('e6ce') || activeApiKey.startsWith('sk-ai-v1-')) {
+      activeApiKey = (import.meta.env.VITE_GEMINI_API_KEY || '').trim();
+    }
+    const activeModel = model === 'gemini-2.5-flash' || model === 'gemini-1.5-flash' ? 'gemini-3.6-flash' : (model || 'gemini-3.6-flash');
+
+    const endpointUrl = `https://generativelanguage.googleapis.com/v1beta/models/${activeModel}:streamGenerateContent?alt=sse&key=${activeApiKey}`;
+
+    const contents = [
+      ...history.slice(-8).map((msg) => ({
+        role: msg.role === 'assistant' ? 'model' : 'user',
+        parts: [{ text: msg.content }],
+      })),
+      {
+        role: 'user',
+        parts: [{ text: `${systemPrompt}\n\n[CÂU HỎI GIA CHỦ]: ${userMessage}` }],
+      },
+    ];
+
+    const response = await fetch(endpointUrl, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ contents }),
+    });
+
+    if (!response.ok) {
+      const errText = await response.text();
+      throw new Error(`Lỗi kết nối Google Gemini (${response.status}): ${errText}`);
+    }
+
+    if (!response.body) {
+      throw new Error('Google Gemini API không trả về dữ liệu luồng.');
+    }
+
+    const reader = response.body.getReader();
+    const decoder = new TextDecoder('utf-8');
+    let fullContent = '';
+    let buffer = '';
+
+    while (true) {
+      const { done, value } = await reader.read();
+      if (done) break;
+
+      buffer += decoder.decode(value, { stream: true });
+      const lines = buffer.split('\n');
+      buffer = lines.pop() || '';
+
+      for (const line of lines) {
+        const trimmed = line.trim();
+        if (trimmed.startsWith('data: ')) {
+          try {
+            const jsonStr = trimmed.replace(/^data:\s*/, '');
+            const parsed = JSON.parse(jsonStr);
+            const contentChunk = parsed.candidates?.[0]?.content?.parts?.[0]?.text || '';
+            if (contentChunk) {
+              fullContent += contentChunk;
+              onChunk(contentChunk);
+            }
+          } catch (e) {
+            // Ignore parse error
+          }
+        }
+      }
+    }
+
+    return fullContent || 'Đã nhận phản hồi từ Google Gemini AI.';
   },
 
   // Native Anthropic Claude API Stream Handler
