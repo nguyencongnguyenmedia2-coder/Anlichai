@@ -11,7 +11,7 @@
     "electron/**/*"
   ],
   "win": {
-    "target": ["nsis", "portable", "dir"],
+    "target": ["portable", "dir"],
     "cscLink": null,
     "verifyUpdateCodeSignature": false,
     "forceCodeSigning": false
