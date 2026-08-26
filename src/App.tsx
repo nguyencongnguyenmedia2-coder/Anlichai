@@ -172,11 +172,18 @@ export const App: React.FC = () => {
     }
   }, [activeTab, horoscopeModalOpen]);
 
-  // Request notifications & check events on app launch
+  // Request notifications & check events on app launch + periodic check
   useEffect(() => {
     notificationService.requestPermission().then(() => {
       notificationService.checkAndNotifyTodayEvents();
     });
+
+    // Check every 15 minutes automatically
+    const timer = setInterval(() => {
+      notificationService.checkAndNotifyTodayEvents();
+    }, 15 * 60 * 1000);
+
+    return () => clearInterval(timer);
   }, []);
 
   // SEO: Update dynamic Document Title based on Active Tab & Horoscope

@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { Search, Plus, Trash2, Flag, Bell, BellOff } from 'lucide-react';
+import React, { useState, useMemo } from 'react';
+import { Search, Plus, Trash2, Flag, Bell, BellOff, ArrowUpDown, ArrowUp, ArrowDown } from 'lucide-react';
 import { EventItem, EventType } from '../types';
 import { storageService } from '../services/storageService';
 import { lunarService } from '../services/lunarService';
@@ -16,6 +16,7 @@ export const EventsView: React.FC<EventsViewProps> = ({
   const [events, setEvents] = useState<EventItem[]>(() => storageService.getEvents());
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
+  const [sortOrder, setSortOrder] = useState<'asc' | 'desc' | 'default'>('asc');
   const [showAddModal, setShowAddModal] = useState<boolean>(false);
 
   // New Event Form State (Admin)
@@ -76,16 +77,31 @@ export const EventsView: React.FC<EventsViewProps> = ({
     }
   };
 
-  const filteredEvents = events.filter((ev) => {
-    const matchesSearch =
-      ev.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      ev.description.toLowerCase().includes(searchQuery.toLowerCase());
-    
-    if (selectedCategory === 'all') return matchesSearch;
-    if (selectedCategory === 'lunar') return matchesSearch && ev.isLunar;
-    if (selectedCategory === 'solar') return matchesSearch && !ev.isLunar;
-    return matchesSearch && ev.type === selectedCategory;
-  });
+  const processedEvents = useMemo(() => {
+    const listWithDays = events.map((ev) => {
+      const { daysRemaining, nextDate } = lunarService.getNextEventOccurrence(ev);
+      return { ...ev, daysRemaining, nextDate };
+    });
+
+    const filtered = listWithDays.filter((ev) => {
+      const matchesSearch =
+        ev.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        ev.description.toLowerCase().includes(searchQuery.toLowerCase());
+
+      if (selectedCategory === 'all') return matchesSearch;
+      if (selectedCategory === 'lunar') return matchesSearch && ev.isLunar;
+      if (selectedCategory === 'solar') return matchesSearch && !ev.isLunar;
+      return matchesSearch && ev.type === selectedCategory;
+    });
+
+    if (sortOrder === 'asc') {
+      return [...filtered].sort((a, b) => a.daysRemaining - b.daysRemaining);
+    } else if (sortOrder === 'desc') {
+      return [...filtered].sort((a, b) => b.daysRemaining - a.daysRemaining);
+    }
+
+    return filtered;
+  }, [events, searchQuery, selectedCategory, sortOrder]);
 
   return (
     <div className="bg-white/90 dark:bg-oriental-dark-card/95 rounded-2xl sm:rounded-3xl shadow-xl sm:shadow-2xl border border-amber-200/90 dark:border-oriental-dark-border p-4 sm:p-6 backdrop-blur-md transition-all">
@@ -118,17 +134,63 @@ export const EventsView: React.FC<EventsViewProps> = ({
         )}
       </div>
 
-      {/* Search Bar & Category Tabs Slider */}
+      {/* Search Bar & Sort Bar Slider */}
       <div className="space-y-3 mb-6">
-        <div className="relative">
-          <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-3" />
-          <input
-            type="text"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="Tìm kiếm lễ hội, ngày lễ 30/4, Quốc khánh 2/9, Giỗ Tổ Hùng Vương..."
-            className="w-full pl-10 pr-4 py-2.5 bg-amber-50/60 dark:bg-oriental-dark-bg border border-amber-200/80 dark:border-amber-900 rounded-xl text-xs sm:text-sm text-slate-800 dark:text-amber-100 focus:outline-none focus:ring-2 focus:ring-oriental-gold-500 shadow-2xs font-medium"
-          />
+        <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
+          {/* Search Input */}
+          <div className="relative flex-1">
+            <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-3" />
+            <input
+              type="text"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              placeholder="Tìm kiếm lễ hội, ngày lễ 30/4, Quốc khánh 2/9, Giỗ Tổ Hùng Vương..."
+              className="w-full pl-10 pr-4 py-2.5 bg-amber-50/60 dark:bg-oriental-dark-bg border border-amber-200/80 dark:border-amber-900 rounded-xl text-xs sm:text-sm text-slate-800 dark:text-amber-100 focus:outline-none focus:ring-2 focus:ring-oriental-gold-500 shadow-2xs font-medium"
+            />
+          </div>
+
+          {/* Sort Control Buttons */}
+          <div className="flex items-center gap-1 bg-amber-50/80 dark:bg-oriental-dark-bg p-1 rounded-xl border border-amber-200/80 dark:border-amber-900 shrink-0 self-start sm:self-auto overflow-x-auto">
+            <div className="flex items-center gap-1 px-2 text-xs font-bold text-oriental-red-900 dark:text-oriental-gold-400 whitespace-nowrap">
+              <ArrowUpDown className="w-3.5 h-3.5 text-amber-600 dark:text-oriental-gold-400" />
+              <span className="hidden lg:inline">Sắp xếp:</span>
+            </div>
+            <button
+              onClick={() => setSortOrder('asc')}
+              title="Sắp xếp số ngày đếm ngược tăng dần (Gần nhất diễn ra trước)"
+              className={`px-2.5 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center gap-1 whitespace-nowrap ${
+                sortOrder === 'asc'
+                  ? 'bg-oriental-red-800 text-oriental-gold-300 shadow-2xs'
+                  : 'text-slate-700 dark:text-amber-200/70 hover:bg-amber-200/50 dark:hover:bg-amber-900/30'
+              }`}
+            >
+              <ArrowUp className="w-3 h-3" />
+              <span>Gần nhất (Tăng)</span>
+            </button>
+            <button
+              onClick={() => setSortOrder('desc')}
+              title="Sắp xếp số ngày đếm ngược giảm dần (Xa nhất diễn ra trước)"
+              className={`px-2.5 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center gap-1 whitespace-nowrap ${
+                sortOrder === 'desc'
+                  ? 'bg-oriental-red-800 text-oriental-gold-300 shadow-2xs'
+                  : 'text-slate-700 dark:text-amber-200/70 hover:bg-amber-200/50 dark:hover:bg-amber-900/30'
+              }`}
+            >
+              <ArrowDown className="w-3 h-3" />
+              <span>Xa nhất (Giảm)</span>
+            </button>
+            <button
+              onClick={() => setSortOrder('default')}
+              title="Hiển thị theo thứ tự mặc định"
+              className={`px-2.5 py-1.5 rounded-lg text-xs font-bold transition-all whitespace-nowrap ${
+                sortOrder === 'default'
+                  ? 'bg-oriental-red-800 text-oriental-gold-300 shadow-2xs'
+                  : 'text-slate-700 dark:text-amber-200/70 hover:bg-amber-200/50 dark:hover:bg-amber-900/30'
+              }`}
+            >
+              <span>Mặc định</span>
+            </button>
+          </div>
         </div>
 
         {/* Category Pills Slider */}
@@ -156,41 +218,48 @@ export const EventsView: React.FC<EventsViewProps> = ({
         </div>
       </div>
 
-      {/* Events Grid (Pure Professional Typography without images) */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        {filteredEvents.map((ev) => {
-          const { daysRemaining } = lunarService.getNextEventOccurrence(ev);
-          return (
-            <div
-              key={ev.id}
-              className="bg-amber-50/40 dark:bg-oriental-dark-bg/60 rounded-2xl p-4 border border-amber-200/80 dark:border-oriental-dark-border shadow-2xs hover:shadow-md hover:border-amber-400 transition-all flex flex-col justify-between"
-            >
-              <div>
-                {/* Header Badges Bar */}
-                <div className="flex items-center justify-between mb-2.5">
-                  <span
-                    className="px-2.5 py-1 rounded-lg text-xs font-extrabold text-white shadow-2xs flex items-center gap-1.5"
-                    style={{ backgroundColor: ev.color || '#D97706' }}
-                  >
-                    <Flag className="w-3.5 h-3.5" />
-                    <span>{ev.isLunar ? 'Lễ Truyền Thống' : 'Quốc Lễ Việt Nam'}</span>
-                  </span>
+      {/* Events Grid */}
+      {processedEvents.length === 0 ? (
+        <div className="text-center py-12 bg-amber-50/30 dark:bg-oriental-dark-bg/30 rounded-2xl border border-dashed border-amber-200/80 dark:border-amber-900">
+          <p className="text-sm font-semibold text-slate-500 dark:text-amber-200/60">
+            Không tìm thấy lễ hội hoặc sự kiện phù hợp với từ khóa tìm kiếm.
+          </p>
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {processedEvents.map((ev) => {
+            const { daysRemaining } = ev;
+            return (
+              <div
+                key={ev.id}
+                className="bg-amber-50/40 dark:bg-oriental-dark-bg/60 rounded-2xl p-4 border border-amber-200/80 dark:border-oriental-dark-border shadow-2xs hover:shadow-md hover:border-amber-400 transition-all flex flex-col justify-between"
+              >
+                <div>
+                  {/* Header Badges Bar */}
+                  <div className="flex items-center justify-between mb-2.5">
+                    <span
+                      className="px-2.5 py-1 rounded-lg text-xs font-extrabold text-white shadow-2xs flex items-center gap-1.5"
+                      style={{ backgroundColor: ev.color || '#D97706' }}
+                    >
+                      <Flag className="w-3.5 h-3.5" />
+                      <span>{ev.isLunar ? 'Lễ Truyền Thống' : 'Quốc Lễ Việt Nam'}</span>
+                    </span>
 
-                  {/* Countdown Badge */}
-                  <span
-                    className={`font-serif font-bold text-xs px-2.5 py-0.5 rounded-full border shadow-2xs ${
-                      daysRemaining === 0
-                        ? 'bg-rose-600 text-white border-rose-400 animate-pulse'
-                        : daysRemaining <= 7
-                        ? 'bg-amber-500 text-oriental-red-950 border-amber-300 font-extrabold'
-                        : 'bg-amber-100 dark:bg-amber-900/40 text-oriental-red-900 dark:text-oriental-gold-300 border-amber-300/50'
-                    }`}
-                  >
-                    {daysRemaining === 0
-                      ? '🎉 Hôm nay là ngày diễn ra!'
-                      : `⏳ Còn ${daysRemaining} ngày nữa`}
-                  </span>
-                </div>
+                    {/* Countdown Badge */}
+                    <span
+                      className={`font-serif font-bold text-xs px-2.5 py-0.5 rounded-full border shadow-2xs ${
+                        daysRemaining === 0
+                          ? 'bg-rose-600 text-white border-rose-400 animate-pulse'
+                          : daysRemaining <= 7
+                          ? 'bg-amber-500 text-oriental-red-950 border-amber-300 font-extrabold'
+                          : 'bg-amber-100 dark:bg-amber-900/40 text-oriental-red-900 dark:text-oriental-gold-300 border-amber-300/50'
+                      }`}
+                    >
+                      {daysRemaining === 0
+                        ? '🎉 Hôm nay là ngày diễn ra!'
+                        : `⏳ Còn ${daysRemaining} ngày nữa`}
+                    </span>
+                  </div>
 
                 {/* Event Name */}
                 <h3 className="font-serif font-extrabold text-base sm:text-lg text-oriental-red-900 dark:text-oriental-gold-300 mb-1 leading-snug">
@@ -248,6 +317,7 @@ export const EventsView: React.FC<EventsViewProps> = ({
           );
         })}
       </div>
+      )}
 
       {/* Admin Add Custom Event Modal */}
       {showAddModal && (

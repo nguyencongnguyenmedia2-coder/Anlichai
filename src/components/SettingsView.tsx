@@ -15,11 +15,13 @@ import {
   AlertCircle,
   RefreshCw,
   Server,
-  ShieldAlert
+  ShieldAlert,
+  Bell
 } from 'lucide-react';
 import { AppSettings, AIProvider } from '../types';
 import { AI_PROVIDER_PRESETS } from '../services/storageService';
 import { aiService } from '../services/aiService';
+import { notificationService } from '../services/notificationService';
 
 interface SettingsViewProps {
   settings: AppSettings;
@@ -37,12 +39,13 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
 }) => {
   const [adminPin, setAdminPin] = useState(settings.adminPin || '123456');
   const [savedSuccess, setSavedSuccess] = useState(false);
+  const [notificationsEnabled, setNotificationsEnabled] = useState<boolean>(settings.notificationsEnabled ?? true);
 
   // Private AI Assistant State
-  const [aiProvider, setAiProvider] = useState<AIProvider>(settings.aiProvider || 'deepseek');
+  const [aiProvider, setAiProvider] = useState<AIProvider>(settings.aiProvider || 'gemini');
   const [aiApiKey, setAiApiKey] = useState(settings.aiApiKey || '');
-  const [aiModel, setAiModel] = useState(settings.aiModel || 'deepseek-chat');
-  const [aiBaseUrl, setAiBaseUrl] = useState(settings.aiBaseUrl || 'https://api.deepseek.com');
+  const [aiModel, setAiModel] = useState(settings.aiModel || 'gemini-1.5-flash');
+  const [aiBaseUrl, setAiBaseUrl] = useState(settings.aiBaseUrl || 'https://generativelanguage.googleapis.com/v1beta');
   const [showApiKey, setShowApiKey] = useState(false);
 
   // Test Connection State
@@ -78,6 +81,7 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
     e.preventDefault();
     const updated: AppSettings = {
       ...settings,
+      notificationsEnabled,
       adminPin: adminPin.trim(),
       aiProvider,
       aiApiKey: aiApiKey.trim(),
@@ -379,6 +383,55 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
             </div>
           </div>
         )}
+
+        {/* SECTION 4.5: NOTIFICATION SETTINGS & TEST */}
+        <div className="bg-amber-50/70 dark:bg-oriental-dark-bg/80 p-4 rounded-xl border border-amber-200/80 dark:border-oriental-dark-border space-y-3">
+          <div className="flex items-center justify-between">
+            <h3 className="font-serif font-bold text-sm text-oriental-red-900 dark:text-oriental-gold-400 flex items-center gap-2">
+              <Bell className="w-4 h-4 text-amber-600 dark:text-oriental-gold-400" />
+              Cài Đặt Thông Báo & Nhắc Nhở
+            </h3>
+            <button
+              type="button"
+              onClick={async () => {
+                const granted = await notificationService.requestPermission();
+                if (granted) {
+                  notificationService.sendTestNotification();
+                } else {
+                  alert('Vui lòng cấp quyền thông báo trong trình duyệt của bạn!');
+                }
+              }}
+              className="px-3 py-1.5 bg-amber-500 hover:bg-amber-600 text-oriental-red-950 font-bold rounded-lg text-xs shadow-xs transition-all flex items-center gap-1.5 cursor-pointer"
+            >
+              <Bell className="w-3.5 h-3.5" />
+              <span>Thử Phát Thông Báo</span>
+            </button>
+          </div>
+
+          <div className="flex items-center justify-between pt-1">
+            <div>
+              <span className="block font-medium text-xs text-slate-800 dark:text-amber-100">
+                Bật Thông Báo Nhắc Nhở Lễ Hội & Sự Kiện
+              </span>
+              <span className="text-[11px] text-slate-500 dark:text-amber-200/60">
+                Tự động gửi thông báo trên Desktop / Trình duyệt khi có sự kiện hoặc lịch cá nhân
+              </span>
+            </div>
+            <button
+              type="button"
+              onClick={() => setNotificationsEnabled(!notificationsEnabled)}
+              className={`w-12 h-6 rounded-full transition-colors relative p-0.5 cursor-pointer ${
+                notificationsEnabled ? 'bg-emerald-600' : 'bg-slate-300 dark:bg-slate-700'
+              }`}
+            >
+              <div
+                className={`w-5 h-5 rounded-full bg-white transition-transform ${
+                  notificationsEnabled ? 'translate-x-6' : 'translate-x-0'
+                }`}
+              />
+            </button>
+          </div>
+        </div>
 
         {/* SECTION 5: CREDITS */}
         <div className="bg-amber-50/70 dark:bg-oriental-dark-bg/80 p-4 rounded-xl border border-oriental-gold-500/40 space-y-2">
